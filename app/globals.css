@@ -1,0 +1,197 @@
+/* Tambahan khusus Next.js (gaya utama ada di theme.css, disalin dari tema WordPress). */
+.gx-locked { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 2rem; font-family: system-ui, sans-serif; }
+.gx-locked h1 { font-size: 1.5rem; margin-bottom: .5rem; }
+
+/* ---------- Skeleton (efek kilau saat memuat) ---------- */
+.sk { display: block; position: relative; overflow: hidden; background: rgb(var(--gx-line)); border-radius: 6px; }
+.sk::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgb(255 255 255 / .55), transparent); animation: sk-shine 1.3s ease-in-out infinite; }
+.dark .sk::after { background: linear-gradient(90deg, transparent, rgb(255 255 255 / .08), transparent); }
+@keyframes sk-shine { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .sk::after { animation: none; } }
+.sk-stack { display: flex; flex-direction: column; gap: .45rem; margin-top: .45rem; width: 100%; }
+.sk-wrap .gx-card__media.sk { aspect-ratio: 4 / 3; }
+@media (min-width: 640px) { .sk-wrap .gx-card__media.sk { aspect-ratio: 16 / 10; } }
+.sk-ratio { aspect-ratio: 16 / 10; border-radius: var(--gx-radius); }
+.sk-gridcard { display: flex; flex-direction: column; }
+.sk-row { display: flex; gap: .75rem; align-items: flex-start; padding: .55rem 0; }
+.sk-row > .sk { flex-shrink: 0; }
+.sk-headline { margin: 1rem 0 1.75rem; }
+.sk-special { padding-bottom: 1rem; margin-bottom: 1.25rem; border-bottom: 1px solid rgb(var(--gx-line)); }
+.sk-special__row { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: .8rem; }
+@media (min-width: 768px) { .sk-special__row { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 767px) { .sk-special__row > :nth-child(n+2) { display: none; } }
+.sk-hero { aspect-ratio: 4 / 4.4; border-radius: var(--gx-radius); margin: 0 7%; }
+@media (min-width: 768px) { .sk-hero { aspect-ratio: 16 / 7.6; margin: 0; border-radius: 0; } }
+.sk-tabs { display: none; }
+@media (min-width: 768px) { .sk-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem; margin-top: .4rem; } .sk-tab { aspect-ratio: 16 / 12; border-radius: 0; } }
+.sk-article .sk-figure { aspect-ratio: 16 / 9; margin: 1.25rem 0; border-radius: var(--gx-radius); }
+.sk-article .sk-stack { margin-top: 1rem; }
+
+/* Gambar muncul halus setelah dimuat */
+.gx-img { transition: opacity .35s ease; }
+
+/* ---------- Bilah progres navigasi ---------- */
+.gx-progress { position: fixed; top: 0; left: 0; height: 3px; z-index: 9999; background: linear-gradient(90deg, rgb(var(--gx-primary)), rgb(var(--gx-accent))); box-shadow: 0 0 8px rgb(var(--gx-primary) / .6); transition: width .25s ease, opacity .35s ease; pointer-events: none; }
+
+/* ---------- Header desktop ala portal berita (menu menempel saat gulir) ---------- */
+.gx-nav__logo, .gx-nav__arrow, .gx-search--nav { display: none; }
+.gx-nav__scroller { position: relative; flex: 1; min-width: 0; }
+@media (min-width: 1024px) {
+	.gx-sticky-header .gx-header { position: relative; }
+	.gx-header { box-shadow: none; }
+	.gx-topbar { min-height: 72px; }
+	.gx-search--header { width: 24rem; }
+	.gx-search--header input { height: 33px; padding-block: 0; font-size: .88rem; }
+	.gx-search--header button { width: 33px; height: 33px; right: 0; }
+
+	.gx-nav { background: rgb(var(--gx-header)); border-top: 1px solid rgb(var(--gx-line)); border-bottom: 1px solid rgb(var(--gx-line)); }
+	.gx-nav__inner { display: flex; align-items: center; gap: 1rem; }
+	.gx-nav__list { margin: 0; padding: 0; gap: .1rem; }
+	.gx-nav__inner, .gx-nav__list a { height: 42px; }
+	.gx-nav__list a { color: rgb(var(--gx-heading)); font-weight: 600; font-size: .9rem; padding: 0 .75rem; user-select: none; }
+	.gx-nav__list a:hover { color: rgb(var(--gx-primary)); }
+	.gx-nav__list .gx-mi { color: rgb(var(--gx-primary)); }
+	.gx-nav__list .current-menu-item > a, .gx-nav__list .current-post-ancestor > a, .gx-nav__list a[aria-current] { color: rgb(var(--gx-primary)); }
+	.gx-nav__list .current-menu-item > a::after, .gx-nav__list .current-post-ancestor > a::after, .gx-nav__list a[aria-current]::after { content: ""; position: absolute; left: .75rem; right: .75rem; bottom: 0; height: 3px; border-radius: 3px 3px 0 0; background: rgb(var(--gx-primary)); }
+	.gx-nav__list.gx-dragging { cursor: grabbing; }
+	.gx-nav__list.gx-dragging a { pointer-events: none; }
+
+	/* Tombol geser kiri/kanan + bayangan tepi, hanya muncul bila menu masih bisa digeser. */
+	.gx-nav__scroller::before, .gx-nav__scroller::after { content: ""; position: absolute; top: 0; bottom: 0; width: 4rem; z-index: 1; pointer-events: none; opacity: 0; transition: opacity .2s; }
+	.gx-nav__scroller::before { left: 0; background: linear-gradient(90deg, rgb(var(--gx-header)) 40%, rgb(var(--gx-header) / 0)); }
+	.gx-nav__scroller::after { right: 0; background: linear-gradient(270deg, rgb(var(--gx-header)) 40%, rgb(var(--gx-header) / 0)); }
+	.gx-nav__arrow { position: absolute; top: 50%; z-index: 2; display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; padding: 0; border-radius: 999px; border: 1px solid rgb(var(--gx-line)); background: rgb(var(--gx-card)); color: rgb(var(--gx-heading)); box-shadow: 0 2px 6px rgb(0 0 0 / .12); font-size: .8rem; cursor: pointer; transform: translateY(-50%); opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s, color .2s; }
+	.gx-nav__arrow:hover { color: rgb(var(--gx-primary)); }
+	.gx-nav__arrow--prev { left: 0; }
+	.gx-nav__arrow--next { right: 0; }
+	.gx-can-prev::before, .gx-can-next::after, .gx-can-prev .gx-nav__arrow--prev, .gx-can-next .gx-nav__arrow--next { opacity: 1; visibility: visible; }
+
+	/* Menu normal (belum menempel): selebar konten web, warna gradasi dari pengaturan tema. */
+	.gx-header:not(.gx-header--stuck) .gx-nav { background: none; border: 0; padding-bottom: .6rem; }
+	.gx-header:not(.gx-header--stuck) .gx-nav__inner { width: calc(100% - 2rem); max-width: calc(var(--gx-container) - 2rem); padding-inline: .25rem; border-radius: var(--gx-radius); background: linear-gradient(90deg, rgb(var(--gx-nav-start)), rgb(var(--gx-nav-end))); }
+	.gx-header:not(.gx-header--stuck) .gx-nav__list a,
+	.gx-header:not(.gx-header--stuck) .gx-nav__list .gx-mi { color: rgb(var(--gx-nav-text)); }
+	.gx-header:not(.gx-header--stuck) .gx-nav__list a:hover,
+	.gx-header:not(.gx-header--stuck) .gx-nav__list a[aria-current],
+	.gx-header:not(.gx-header--stuck) .gx-nav__list .current-menu-item > a { color: rgb(var(--gx-nav-active)); }
+	.gx-header:not(.gx-header--stuck) .gx-nav__list a[aria-current]::after,
+	.gx-header:not(.gx-header--stuck) .gx-nav__list .current-menu-item > a::after { background: rgb(var(--gx-nav-active)); }
+	.gx-header:not(.gx-header--stuck) .gx-nav__scroller::before { background: linear-gradient(90deg, rgb(var(--gx-nav-start)) 40%, rgb(var(--gx-nav-start) / 0)); }
+	.gx-header:not(.gx-header--stuck) .gx-nav__scroller::after { background: linear-gradient(270deg, rgb(var(--gx-nav-end)) 40%, rgb(var(--gx-nav-end) / 0)); }
+
+	/* Saat topbar tergulir keluar: logo kecil + semua menu + cari tetap di atas. */
+	.gx-header--stuck .gx-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 45; border-top: 0; box-shadow: 0 2px 12px rgb(0 0 0 / .08); animation: gx-nav-in .25s ease-out; }
+	.gx-header--stuck .gx-nav__logo { display: block; flex-shrink: 0; }
+	.gx-header--stuck .gx-nav__logo .gx-brand { font-size: 1.2rem; }
+	.gx-header--stuck .gx-nav__logo .gx-brand__img { height: calc(var(--gx-logo-h) * .75); }
+	.gx-header--stuck .gx-nav__list { gap: 0; }
+	.gx-header--stuck .gx-nav__list a { font-size: 12px; padding: 0 .55rem; }
+	.gx-header--stuck .gx-nav__list .gx-mi { display: none; }
+	.gx-header--stuck .gx-nav__list a[aria-current]::after, .gx-header--stuck .gx-nav__list .current-menu-item > a::after { left: .55rem; right: .55rem; }
+
+	/* Cari saat menempel: hanya ikon; klik membuka kotak input di bawahnya. */
+	.gx-header--stuck .gx-search--nav { display: block; flex-shrink: 0; }
+	.gx-search--nav button { position: static; transform: none; width: 33px; height: 33px; border-radius: 999px; background: rgb(var(--gx-page)); color: rgb(var(--gx-heading)); }
+	.gx-search--nav button:hover { color: rgb(var(--gx-primary)); }
+	.gx-search--nav input { position: absolute; top: calc(100% + .6rem); right: 0; width: 20rem; padding: .55rem .9rem; font-size: .9rem; box-shadow: 0 8px 24px rgb(0 0 0 / .15); opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity .2s, transform .2s, visibility .2s; }
+	.gx-search--nav.gx-open input { opacity: 1; visibility: visible; transform: none; }
+	@keyframes gx-nav-in { from { transform: translateY(-100%); } }
+}
+@media (min-width: 1024px) and (prefers-reduced-motion: reduce) { .gx-header--stuck .gx-nav { animation: none; } }
+
+
+/* ---------- Headline: foto sedikit lebih tinggi, judul lebih ringkas agar foto tidak tertutup ---------- */
+.gx-hs__shade { padding: 3rem 1rem .9rem; background: linear-gradient(0deg, rgba(0,0,0,.88), rgba(0,0,0,.45) 60%, transparent); }
+.gx-hs__title { font-size: 1.1rem; line-height: 1.3; -webkit-line-clamp: 3; }
+.gx-card--hero .gx-card__title { font-size: 1.15rem; line-height: 1.3; }
+.gx-card--hero .gx-card__shade { padding: 3.5rem 1.1rem 1rem; }
+@media (max-width: 767px) { .gx-hs__media { aspect-ratio: 4 / 4.8; } }
+@media (min-width: 768px) {
+	.gx-hs__media { aspect-ratio: 16 / 9; }
+	.gx-hs__shade { padding: 4rem 8rem 1.25rem 1.5rem; }
+	.gx-hs__title { font-size: 1.5rem; line-height: 1.25; -webkit-line-clamp: 2; }
+	.gx-card--hero .gx-card__title, .gx-headline--style3 .gx-card--hero .gx-card__title { font-size: 1.4rem; line-height: 1.25; }
+	.gx-card--hero .gx-card__shade { padding: 4rem 1.4rem 1.2rem; }
+	.gx-headline--style1 .gx-card--hero .gx-card__media { aspect-ratio: 16 / 9.5; }
+}
+
+/* ---------- Short Video vertikal di bawah headline ---------- */
+.gx-sv { margin: 1rem 0 1.5rem; }
+.gx-sv__head { display: flex; align-items: center; gap: .6rem; margin-bottom: .7rem; }
+.gx-sv__label { display: inline-flex; align-items: center; gap: .4rem; font-family: var(--gx-font-heading); font-weight: 800; font-size: 1.05rem; color: rgb(var(--gx-heading)); }
+.gx-sv__label .gx-icon { color: rgb(var(--gx-accent)); }
+.gx-sv__nav { margin-left: auto; display: none; gap: .35rem; }
+@media (min-width: 768px) { .gx-sv__nav { display: flex; } }
+.gx-sv__track { display: grid; grid-auto-flow: column; grid-auto-columns: 8.5rem; gap: .65rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.gx-sv__track::-webkit-scrollbar { display: none; }
+@media (min-width: 768px) { .gx-sv__track { grid-auto-columns: 10rem; gap: .8rem; } }
+.gx-sv__item { position: relative; display: block; aspect-ratio: 9 / 16; padding: 0; border: 0; border-radius: var(--gx-radius); overflow: hidden; background: #111; cursor: pointer; scroll-snap-align: start; text-align: left; isolation: isolate; }
+.gx-sv__item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.gx-sv__item:hover img { transform: scale(1.05); }
+.gx-sv__item::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.85), transparent 55%); }
+.gx-sv__play { position: absolute; top: .5rem; right: .5rem; z-index: 1; color: #fff; font-size: 1.3rem; filter: drop-shadow(0 1px 3px rgba(0,0,0,.5)); }
+.gx-sv__title { position: absolute; left: .6rem; right: .6rem; bottom: .6rem; z-index: 1; color: #fff; font-size: .8rem; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Pemutar layar penuh: geser atas/bawah seperti Shorts. */
+.gx-svp { position: fixed; inset: 0; z-index: 1000; background: #000; color: #fff; }
+.gx-svp__feed { height: 100%; overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior: contain; scrollbar-width: none; outline: none; }
+.gx-svp__feed::-webkit-scrollbar { display: none; }
+.gx-svp__slide { height: 100%; scroll-snap-align: start; scroll-snap-stop: always; display: flex; align-items: center; justify-content: center; }
+.gx-svp__stage { position: relative; width: 100%; height: 100%; }
+.gx-svp__box { position: absolute; inset: 0; background: #000; overflow: hidden; }
+.gx-svp__box iframe, .gx-svp__box img { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
+.gx-svp__tap { position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center; padding: 0; border: 0; background: transparent; color: #fff; font-size: 4rem; cursor: pointer; }
+.gx-svp__tap .gx-icon { opacity: .85; filter: drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.gx-svp__info { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 3rem 4.75rem 1.25rem 1rem; background: linear-gradient(0deg, rgba(0,0,0,.8), transparent); pointer-events: none; }
+.gx-svp__title { margin: 0; font-weight: 400; font-size: .9rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.gx-svp__channel { pointer-events: auto; display: inline-block; margin-bottom: .35rem; font-size: .95rem; font-weight: 700; color: #fff; }
+.gx-svp__channel:hover { color: #fff; text-decoration: underline; }
+.gx-svp__btn { display: inline-flex; align-items: center; justify-content: center; min-width: 2.6rem; height: 2.6rem; padding: 0 .9rem; border: 0; border-radius: 999px; background: rgba(255,255,255,.15); color: #fff; font-size: .85rem; font-weight: 600; cursor: pointer; backdrop-filter: blur(6px); }
+.gx-svp__btn:hover { background: rgba(255,255,255,.28); }
+.gx-svp__btn:disabled { opacity: .35; cursor: default; }
+.gx-svp__close { position: absolute; top: max(.75rem, env(safe-area-inset-top)); right: .75rem; z-index: 3; padding: 0; font-size: 1.1rem; }
+.gx-svp__mute { position: absolute; top: max(.75rem, env(safe-area-inset-top)); left: .75rem; z-index: 3; }
+.gx-svp__count { position: absolute; top: max(1.45rem, calc(env(safe-area-inset-top) + .7rem)); left: 50%; z-index: 3; transform: translateX(-50%); font-size: .8rem; font-weight: 600; color: rgba(255,255,255,.8); pointer-events: none; }
+.gx-svp__nav { display: none; }
+.gx-svp__down .gx-icon { transform: rotate(180deg); }
+@media (min-width: 1024px) {
+	.gx-svp { background: rgba(0,0,0,.92); }
+	.gx-svp__stage { width: auto; height: calc(100% - 2.5rem); aspect-ratio: 9 / 16; }
+	.gx-svp__box { border-radius: 14px; }
+	.gx-svp__nav { position: absolute; right: 1.5rem; top: 50%; z-index: 3; transform: translateY(-50%); display: flex; flex-direction: column; gap: .6rem; }
+	.gx-svp__nav .gx-svp__btn { padding: 0; }
+}
+
+/* Tombol aksi ala TikTok: suka, komentar, bagikan. */
+.gx-svp__rail { position: absolute; right: .6rem; bottom: 5.5rem; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
+.gx-svp__avatar { display: flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; margin-bottom: .2rem; border-radius: 999px; border: 2px solid #fff; background: linear-gradient(135deg, rgb(var(--gx-accent)), rgb(var(--gx-primary))); color: #fff; font-weight: 800; font-size: 1.2rem; text-transform: uppercase; }
+.gx-svp__avatar:hover { color: #fff; }
+.gx-svp__act { display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: 0; border: 0; background: none; color: #fff; cursor: pointer; }
+.gx-svp__act-ic { display: flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; border-radius: 999px; font-size: 1.6rem; filter: drop-shadow(0 1px 4px rgba(0,0,0,.45)); transition: transform .15s; }
+.gx-svp__act:hover .gx-svp__act-ic { transform: scale(1.08); }
+.gx-svp__act:active .gx-svp__act-ic { transform: scale(.9); }
+.gx-svp__act-n { font-size: .75rem; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+.gx-svp__act.is-liked .gx-svp__act-ic { color: #fe2c55; animation: gx-like .35s ease; }
+@keyframes gx-like { 40% { transform: scale(1.3); } }
+@media (prefers-reduced-motion: reduce) { .gx-svp__act.is-liked .gx-svp__act-ic { animation: none; } }
+
+.gx-svp__toast { position: absolute; left: 50%; top: 50%; z-index: 6; transform: translate(-50%, -50%); padding: .6rem 1.1rem; border-radius: 999px; background: rgba(0,0,0,.75); font-size: .85rem; font-weight: 600; pointer-events: none; }
+
+/* Lembar komentar dari bawah. */
+.gx-svp__scrim { position: absolute; inset: 0; z-index: 4; background: rgba(0,0,0,.35); }
+.gx-svp__sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; max-height: 60%; margin-inline: auto; max-width: 30rem; padding-bottom: env(safe-area-inset-bottom); border-radius: 16px 16px 0 0; background: rgb(var(--gx-card)); color: rgb(var(--gx-text)); animation: gx-sheet .25s ease-out; }
+@keyframes gx-sheet { from { transform: translateY(100%); } }
+.gx-svp__sheet-head { position: relative; padding: .9rem 3rem; text-align: center; font-size: .9rem; color: rgb(var(--gx-heading)); border-bottom: 1px solid rgb(var(--gx-line)); }
+.gx-svp__sheet-x { position: absolute; right: .6rem; top: 50%; transform: translateY(-50%); width: 2rem; height: 2rem; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 999px; background: rgb(var(--gx-page)); color: rgb(var(--gx-heading)); cursor: pointer; }
+.gx-svp__sheet-body { display: flex; flex-direction: column; align-items: center; gap: .9rem; padding: 1.75rem 1.25rem 2rem; text-align: center; font-size: .9rem; }
+.gx-svp__sheet-body p { margin: 0; max-width: 20rem; color: rgb(var(--gx-muted)); }
+.gx-svp__sheet-ic { font-size: 2.2rem; color: rgb(var(--gx-muted) / .6); }
+
+@media (min-width: 1024px) {
+	/* Desktop: tombol aksi di luar video, di sisi kanan (seperti TikTok web). */
+	.gx-svp__rail { right: auto; left: calc(100% + 1rem); bottom: 0; }
+	.gx-svp__info { padding-right: 1rem; }
+	.gx-svp__act-ic { background: rgba(255,255,255,.14); font-size: 1.3rem; }
+	.gx-svp__act.is-liked .gx-svp__act-ic { background: rgba(254,44,85,.15); }
+	.gx-svp__sheet { bottom: 1.25rem; border-radius: 16px; }
+}
