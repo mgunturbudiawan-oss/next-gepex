@@ -24,7 +24,8 @@ export async function GET() {
 			ms: Date.now() - t,
 			lisensi_aktif: res.ok ? true : body?.code === 'geprex_unlicensed' ? false : null,
 			site_name: body?.site?.name ?? null,
-			cuplikan: body ? undefined : text.slice(0, 300),
+			cuplikan: body ? undefined : text.replace(/s+/g, ' ').slice(0, 2500),
+			headers: body ? undefined : Object.fromEntries([...res.headers].filter(([k]) => !/cookie/i.test(k))),
 		}, { headers: { 'Cache-Control': 'no-store' } });
 	} catch (e) {
 		return Response.json({ ...out, ok: false, ms: Date.now() - t, error: e.cause?.code || e.name, pesan: e.message }, { status: 502 });
