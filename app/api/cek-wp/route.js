@@ -22,9 +22,9 @@ export async function GET() {
 			ok: res.ok && Boolean(body),
 			status: res.status,
 			ms: Date.now() - t,
-			lisensi_aktif: res.ok ? true : body?.code === 'geprex_unlicensed' ? false : null,
+			lisensi_aktif: res.ok && body ? true : body?.code === 'geprex_unlicensed' ? false : null,
 			site_name: body?.site?.name ?? null,
-			cuplikan: body ? undefined : text.replace(/s+/g, ' ').slice(0, 2500),
+			cuplikan: body ? undefined : text.replace(/\s+/g, ' ').slice(0, 2500),
 			headers: body ? undefined : Object.fromEntries([...res.headers].filter(([k]) => !/cookie/i.test(k))),
 		}, { headers: { 'Cache-Control': 'no-store' } });
 	} catch (e) {
