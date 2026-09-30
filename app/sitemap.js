@@ -1,6 +1,7 @@
 import { wp, absolute } from '@/lib/wp';
 
-export const revalidate = 3600;
+// Dibuat saat diakses (build tidak menghubungi WordPress); data tetap di-cache 1 jam.
+export const dynamic = 'force-dynamic';
 
 export default async function sitemap() {
 	const data = await wp('sitemap', {}, { revalidate: 3600 });

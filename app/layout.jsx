@@ -7,6 +7,10 @@ import NavProgress from '@/components/NavProgress';
 import { Suspense } from 'react';
 import RawHtml from '@/components/RawHtml';
 
+// Render saat diakses, bukan saat build: build (mis. di Vercel) tidak perlu menghubungi WordPress.
+// Data WordPress tetap di-cache (fetch `next.revalidate` di lib/wp.js), jadi beban WordPress tidak bertambah.
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata() {
 	const config = await getConfig();
 	if (!config.licensed) return { title: 'Situs sedang disiapkan', robots: { index: false } };

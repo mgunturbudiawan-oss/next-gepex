@@ -1,6 +1,7 @@
 import { wp, absolute } from '@/lib/wp';
 
-export const revalidate = 600;
+// Dibuat saat diakses (build tidak menghubungi WordPress); data tetap di-cache 10 menit.
+export const dynamic = 'force-dynamic';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
