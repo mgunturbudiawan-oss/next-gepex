@@ -1,4 +1,4 @@
-import { WP_URL, SITE_URL } from '@/lib/wp';
+import { WP_URL, SITE_URL, WP_UA } from '@/lib/wp';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +13,7 @@ export async function GET() {
 	if (!WP_URL) return Response.json({ ...out, ok: false, pesan: 'WP_URL belum diisi di Environment Variables.' }, { status: 500 });
 	const t = Date.now();
 	try {
-		const res = await fetch(`${WP_URL}/wp-json/geprex/v1/hl/config`, { cache: 'no-store', headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(15000) });
+		const res = await fetch(`${WP_URL}/wp-json/geprex/v1/hl/config`, { cache: 'no-store', headers: { Accept: 'application/json', 'User-Agent': WP_UA }, signal: AbortSignal.timeout(15000) });
 		const text = await res.text();
 		let body = null;
 		try { body = JSON.parse(text); } catch (e) { /* bukan JSON */ }
