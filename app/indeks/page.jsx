@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { wp, getConfig } from '@/lib/wp';
-import { list } from '@/lib/list';
+import { list, decodeHtml } from '@/lib/list';
 import { PageLayout, Breadcrumbs } from '@/components/Layout';
 import { Cat } from '@/components/Cards';
 import Icon from '@/components/Icon';
@@ -28,7 +28,7 @@ export default async function IndeksPage(props) {
 				<label><span><Icon name="grid" /> Kanal</span>
 					<select name="kanal" defaultValue={kanal}>
 						<option value="">Semua kanal</option>
-						{list(config.categories).filter(Boolean).map((c) => <option key={c.id} value={c.slug}>{c.name}</option>)}
+						{list(config.categories).filter(Boolean).map((c) => <option key={c.id} value={c.slug}>{decodeHtml(c.name)}</option>)}
 					</select>
 				</label>
 				<button type="submit" className="gx-btn gx-btn--primary"><Icon name="filter" /> Tampilkan</button>

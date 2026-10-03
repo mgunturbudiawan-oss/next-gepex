@@ -41,12 +41,12 @@ export default async function HomePage() {
 		</div>
 	) : null;
 	return (
-		<PageLayout config={config} className={`gx-page--home${panel ? ' gx-page--tpanel' : ''}`} before={before} sidebar={<Sidebar config={config} hideTrending={hideSideTrend} />}>
+		// Rubrik/kanal selebar penuh di desktop: sidebar sticky berhenti di atasnya.
+		<PageLayout config={config} className={`gx-page--home${panel ? ' gx-page--tpanel' : ''}`} before={before} after={<Sections sections={home.sections} opts={o} />} sidebar={<Sidebar config={config} hideTrending={hideSideTrend} />}>
 			<h1 className="screen-reader-text">{config.site.name} — {config.site.description}</h1>
 			{!wide && !panel ? top : null}
 			{home.style !== 'style3' ? <Trending posts={home.trending} opts={o} /> : null}
 			<Latest home={home} config={config} />
-			<Sections sections={home.sections} opts={o} />
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 		</PageLayout>
 	);

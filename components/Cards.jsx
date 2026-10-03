@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Icon from './Icon';
+import { decodeHtml } from '@/lib/list';
 
 export function Thumb({ post, eager = false, sizes }) {
 	const img = post.image;
@@ -24,7 +25,7 @@ export function Thumb({ post, eager = false, sizes }) {
 
 export function Cat({ post, opts, solid }) {
 	if (!opts.show_category || !post.category) return null;
-	return <Link className={solid ? 'gx-cat gx-cat--solid' : 'gx-cat'} href={post.category.path}>{post.category.name}</Link>;
+	return <Link className={solid ? 'gx-cat gx-cat--solid' : 'gx-cat'} href={post.category.path}>{decodeHtml(post.category.name)}</Link>;
 }
 
 export function Meta({ post, opts, views = false, avatar, className = 'gx-meta' }) {
@@ -104,7 +105,7 @@ export function SectionTitle({ title, href, as = 'h2', icon, id }) {
 	const H = as;
 	return (
 		<div className="gx-section-head">
-			<H className="gx-section-title" id={id}><span className="gx-section-bar" aria-hidden="true" />{icon ? <Icon name={icon} className="gx-trending__fire" /> : null}{title}</H>
+			<H className="gx-section-title" id={id}><span className="gx-section-bar" aria-hidden="true" />{icon ? <Icon name={icon} className="gx-trending__fire" /> : null}{typeof title === 'string' ? decodeHtml(title) : title}</H>
 			{href ? <Link className="gx-section-more" href={href}>Lihat semua <Icon name="chevron-right" /></Link> : null}
 		</div>
 	);

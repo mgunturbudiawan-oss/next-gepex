@@ -7,6 +7,7 @@ import Icon from '@/components/Icon';
 import Ad from '@/components/Ad';
 import ViewPing from '@/components/ViewPing';
 import Comments from '@/components/Comments';
+import { decodeHtml } from '@/lib/list';
 
 // Mendukung semua struktur permalink WordPress: /judul/, /2026/09/30/judul/, /kategori/judul/, /induk/anak/ …
 // Slug artikel = segmen terakhir URL.
@@ -44,7 +45,7 @@ export default async function SinglePage(props) {
 	const url = absolute(post.path);
 	const position = ['right', 'left', 'none'].includes(post.sidebar) ? post.sidebar : undefined;
 	const crumbs = [{ name: 'Beranda', path: '/' }];
-	if (isPost && post.category) crumbs.push({ name: post.category.name, path: post.category.path });
+	if (isPost && post.category) crumbs.push({ name: decodeHtml(post.category.name), path: post.category.path });
 	crumbs.push({ name: post.title });
 
 	const jsonLd = isPost ? {
@@ -60,7 +61,7 @@ export default async function SinglePage(props) {
 				dateModified: post.modified,
 				author: post.author ? { '@type': 'Person', name: post.author.name, url: absolute(post.author.path) } : undefined,
 				publisher: { '@type': 'Organization', name: config.site.name, logo: config.site.logo ? { '@type': 'ImageObject', url: config.site.logo } : undefined },
-				articleSection: post.category?.name,
+				articleSection: post.category ? decodeHtml(post.category.name) : undefined,
 				keywords: post.tags.map((t) => t.name).join(', ') || undefined,
 			},
 			{ '@type': 'BreadcrumbList', itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: c.path ? absolute(c.path) : url })) },

@@ -185,18 +185,23 @@ export function Sidebar({ config, hideTrending, exclude }) {
 }
 
 /** Pembungkus konten + sidebar sesuai pengaturan. */
-export function PageLayout({ config, children, sidebar, position, className = '', before = null }) {
+/**
+ * `after` = konten selebar penuh di bawah area konten + sidebar (desktop), jadi sidebar sticky berhenti di atasnya.
+ * Di HP urutannya tetap: konten → after → sidebar (lihat .gx-page--after di globals.css).
+ */
+export function PageLayout({ config, children, sidebar, position, className = '', before = null, after = null }) {
 	const pos = position || config.options.sidebar_position;
 	if (pos === 'none') {
-		return <div className={`container-custom gx-page ${className}`}>{before}<div className="gx-layout gx-layout--full"><main className="gx-main">{children}</main></div></div>;
+		return <div className={`container-custom gx-page ${className}`}>{before}<div className="gx-layout gx-layout--full"><main className="gx-main">{children}{after}</main></div></div>;
 	}
 	return (
-		<div className={`container-custom gx-page ${className}`}>
+		<div className={`container-custom gx-page ${className}${after ? ' gx-page--after' : ''}`}>
 			{before}
 			<div className={`gx-layout gx-layout--${pos}`}>
 				<main className="gx-main">{children}</main>
 				<aside className={`gx-aside${config.options.sticky_sidebar ? ' gx-aside--sticky' : ''}`}>{sidebar || <Sidebar config={config} />}</aside>
 			</div>
+			{after ? <div className="gx-page__after">{after}</div> : null}
 		</div>
 	);
 }

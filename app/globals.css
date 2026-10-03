@@ -350,3 +350,14 @@
 .gx-nearby__msg { margin: 0; font-size: .8rem; color: rgb(var(--gx-accent)); text-align: center; }
 .gx-nearby__or { display: flex; align-items: center; gap: .6rem; font-size: .75rem; color: rgb(var(--gx-muted)); }
 .gx-nearby__or::before, .gx-nearby__or::after { content: ""; flex: 1; height: 1px; background: rgb(var(--gx-line)); }
+
+/* ---------- Konten selebar penuh di bawah area konten + sidebar (PageLayout `after`) ---------- */
+/* Desktop: rubrik/kanal beranda di luar grid sidebar → sidebar sticky berhenti di atasnya. */
+/* HP/tablet: urutan tetap konten → rubrik → sidebar (grid dilebur dengan display: contents). */
+@media (max-width: 1023px) {
+	.gx-page--after { display: flex; flex-direction: column; }
+	.gx-page--after > .gx-layout { display: contents; }
+	.gx-page--after > .gx-layout > .gx-main { order: 1; }
+	.gx-page--after > .gx-page__after { order: 2; }
+	.gx-page--after > .gx-layout > .gx-aside { order: 3; margin-top: 1.5rem; }
+}

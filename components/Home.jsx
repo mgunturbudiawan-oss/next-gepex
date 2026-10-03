@@ -4,7 +4,7 @@ import Ad from './Ad';
 import LoadMore from './LoadMore';
 import { CardOverlay, CardList, CardGrid, CardMini, Meta, Thumb, SectionTitle } from './Cards';
 import HeadlineSlider from './HeadlineSlider';
-import { list } from '@/lib/list';
+import { list, decodeHtml } from '@/lib/list';
 
 export function Special({ special }) {
 	if (!special || !list(special.posts).length) return null;
@@ -12,7 +12,7 @@ export function Special({ special }) {
 		<section className="gx-special" aria-label={`${special.label}: ${special.name}`}>
 			<div className="gx-special__head">
 				<span className="gx-special__label"><Icon name="star" />{special.label}</span>
-				<Link className="gx-special__name" href={special.path}>{special.name}</Link>
+				<Link className="gx-special__name" href={special.path}>{decodeHtml(special.name)}</Link>
 				<div className="gx-special__nav">
 					<button type="button" className="gx-iconbtn gx-iconbtn--sm" data-gx-scroll="-1" aria-label="Sebelumnya"><Icon name="chevron-left" /></button>
 					<button type="button" className="gx-iconbtn gx-iconbtn--sm" data-gx-scroll="1" aria-label="Berikutnya"><Icon name="chevron-right" /></button>
@@ -148,7 +148,6 @@ export function Topics({ topics, opts }) {
 // Rekomendasi muncul setelah berita terkini ke-3.
 const RECO_AFTER = 3;
 
-const decode = (s = '') => String(s).replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#0?39;|&#8217;/g, '’').replace(/&#8211;/g, '–');
 
 /** 6 berita dari kategori berbeda (1 per kanal beranda), yang belum tampil di headline/terkini. */
 function pickRecommend(home, count = 6) {
@@ -177,7 +176,7 @@ function Recommend({ posts }) {
 				{posts.map((p) => (
 					<article key={p.id} className="gx-reco__item">
 						<Link className="gx-reco__media" href={p.path} tabIndex={-1} aria-hidden="true"><Thumb post={p} sizes="(max-width: 640px) 50vw, 220px" /></Link>
-						{p.category ? <Link className="gx-reco__cat" href={p.category.path}>{decode(p.category.name)}</Link> : null}
+						{p.category ? <Link className="gx-reco__cat" href={p.category.path}>{decodeHtml(p.category.name)}</Link> : null}
 						<h3 className="gx-reco__name"><Link href={p.path}>{p.title}</Link></h3>
 					</article>
 				))}

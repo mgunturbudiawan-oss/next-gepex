@@ -2,6 +2,7 @@
 // Slider headline: desktop = slide besar + thumbnail; HP = mode tengah, geser dengan jari.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { decodeHtml } from '@/lib/list';
 
 function Img({ post, eager, sizes, className = 'gx-img' }) {
 	const i = post.image;
@@ -73,7 +74,7 @@ export default function HeadlineSlider({ slides, badge, autoplay = 6, showCatego
 								<article key={p.id} className={`gx-hs__slide${i === idx ? ' is-current' : ''}`} aria-roledescription="slide" aria-label={`${i + 1} / ${slides.length}`}>
 									<div className="gx-hs__media"><Img post={p} eager={i === 0} sizes="(max-width: 768px) 85vw, 980px" /></div>
 									<div className="gx-hs__shade">
-										{showCategory && p.category ? <Link className="gx-hs__cat" href={p.category.path}>{p.category.name}</Link> : null}
+										{showCategory && p.category ? <Link className="gx-hs__cat" href={p.category.path}>{decodeHtml(p.category.name)}</Link> : null}
 										<H className="gx-hs__title"><Link href={p.path}>{p.title}</Link></H>
 									</div>
 								</article>
