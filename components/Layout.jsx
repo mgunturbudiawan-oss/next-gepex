@@ -3,6 +3,7 @@ import { list } from '@/lib/list';
 import Icon from './Icon';
 import Ad from './Ad';
 import { CardMini } from './Cards';
+import NearbyNews from './NearbyNews';
 
 export function Logo({ config }) {
 	const { site } = config;
@@ -178,7 +179,7 @@ export function Sidebar({ config, hideTrending, exclude }) {
 					</div>
 				</section>
 			) : null}
-			
+			<NearbyNews />
 		</>
 	);
 }
