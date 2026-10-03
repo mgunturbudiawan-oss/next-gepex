@@ -92,8 +92,23 @@ export default function UiController() {
 			}
 			const dark = t.closest('[data-gx-dark]');
 			if (dark) {
-				const on = root.classList.toggle('dark');
-				try { localStorage.setItem('theme', on ? 'dark' : 'light'); } catch (err) { /* abaikan */ }
+				const apply = () => {
+					const on = root.classList.toggle('dark');
+					try { localStorage.setItem('theme', on ? 'dark' : 'light'); } catch (err) { /* abaikan */ }
+				};
+				// Efek gelombang: tema baru melebar melingkar dari titik klik (View Transitions API).
+				if (!document.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { apply(); return; }
+				const r = dark.getBoundingClientRect();
+				// Klik lewat keyboard (detail 0) tidak punya koordinat → pakai tengah tombol.
+				const x = e.detail ? e.clientX : r.left + r.width / 2;
+				const y = e.detail ? e.clientY : r.top + r.height / 2;
+				const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+				document.startViewTransition(apply).ready.then(() => {
+					root.animate(
+						{ clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+						{ duration: 650, easing: 'cubic-bezier(.4, 0, .2, 1)', pseudoElement: '::view-transition-new(root)' },
+					);
+				}).catch(() => {});
 				return;
 			}
 			if (t.closest('[data-gx-menu-toggle]')) {

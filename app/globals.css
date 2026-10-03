@@ -195,3 +195,9 @@
 	.gx-svp__act.is-liked .gx-svp__act-ic { background: rgba(254,44,85,.15); }
 	.gx-svp__sheet { bottom: 1.25rem; border-radius: 16px; }
 }
+
+/* ---------- Efek gelombang saat ganti mode gelap/terang ---------- */
+/* Matikan crossfade bawaan; animasi lingkaran dijalankan dari UiController. */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
