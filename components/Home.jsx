@@ -215,7 +215,8 @@ export function Latest({ home, config }) {
 
 /** Rubrik kategori: 3 kolom; tiap kolom 1 berita bergambar besar + 2 daftar berita tanpa foto. */
 export function Sections({ sections, opts }) {
-	const items = list(sections).filter((s) => list(s.posts).length);
+	// Maksimal 6 rubrik (2 baris × 3 kolom di desktop).
+	const items = list(sections).filter((s) => list(s.posts).length).slice(0, 6);
 	if (!items.length) return null;
 	return (
 		<div className="gx-rubrik">
