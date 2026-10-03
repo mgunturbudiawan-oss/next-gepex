@@ -266,3 +266,16 @@
 .gx-tpanel__name { margin: 0; font-size: .9rem; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .gx-tpanel__name a { color: rgb(var(--gx-heading)); }
 .gx-tpanel__name a:hover { color: rgb(var(--gx-primary)); }
+
+/* ---------- Topik Terkini: kartu horizontal, sudut & jarak tipis ---------- */
+.gx-topics__track { grid-auto-columns: 64%; gap: .4rem; scroll-padding-inline: 0; }
+@media (min-width: 640px) { .gx-topics__track { grid-auto-columns: 40%; } }
+@media (min-width: 1024px) { .gx-topics__track { grid-auto-columns: calc(33.333% - .27rem); } }
+.gx-topic { aspect-ratio: 16 / 10; border-radius: 4px; }
+.gx-topic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.gx-topic:hover img { transform: scale(1.05); }
+.gx-topic::after { background: linear-gradient(0deg, rgba(0,0,0,.82), transparent 65%); }
+.gx-topic__text { left: .6rem; right: .6rem; bottom: .5rem; }
+.gx-topic__name { font-size: .88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gx-topic__count { font-size: .7rem; }
+.gx-topic__ph { font-size: 2rem; }
