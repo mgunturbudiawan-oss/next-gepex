@@ -396,3 +396,28 @@
 
 /* ---------- Skeleton saat berpindah halaman (NavSkeleton): sembunyikan halaman lama ---------- */
 .gx-navsk #gx-content > :not(.gx-navsk__wrap) { display: none; }
+
+/* ---------- Tema kategori: hijau tosca Nahdlatul Ulama (Kanal Jawa Timur) ---------- */
+/* Variabel warna dipasang di <body> saat halaman berisi kategori bertema → header, nav, breaking, aksen ikut hijau. */
+body:has(.gx-ctheme--nu) {
+	--gx-nav-start: 0 135 95;   /* #00875f */
+	--gx-nav-end: 0 94 70;      /* #005e46 */
+	--gx-nav-text: 255 255 255;
+	--gx-nav-active: 190 240 220; /* hijau muda */
+	--gx-primary: 0 135 95;
+	--gx-accent: 0 135 95;
+}
+/* Banner kategori. */
+.gx-ctheme--nu .gx-archive-head { position: relative; overflow: hidden; padding: 1.3rem 1.4rem 1.4rem; border: 0; border-bottom: 4px solid rgb(190 240 220); border-radius: var(--gx-radius); background: rgb(0 135 95); color: #fff; }
+.gx-ctheme--nu .gx-archive-head__kicker { display: block; margin-bottom: .2rem; font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgb(190 240 220); }
+.gx-ctheme--nu .gx-archive-head__title { color: #fff; font-size: 1.7rem; }
+.gx-ctheme--nu .gx-archive-head__desc { color: rgb(255 255 255 / .85); }
+/* Headline: bayangan hijau tua + garis bawah hijau. */
+.gx-ctheme--nu .gx-card--hero { border-bottom: 4px solid rgb(0 135 95); }
+.gx-ctheme--nu .gx-card--hero .gx-card__shade { background: linear-gradient(0deg, rgb(0 52 39 / .96), rgb(0 70 52 / .6) 55%, transparent); }
+/* Berita terkini kategori. */
+.gx-ctheme--nu #gx-post-list .gx-section-head { margin-top: .5rem; }
+.gx-ctheme--nu .gx-list--list { border-top: 3px solid rgb(0 135 95); }
+.gx-ctheme--nu .gx-list--list .gx-card--list { position: relative; padding-left: .85rem; }
+.gx-ctheme--nu .gx-list--list .gx-card--list::before { content: ""; position: absolute; left: 0; top: .9rem; bottom: .9rem; width: 3px; border-radius: 3px; background: rgb(0 135 95 / .25); transition: background .2s; }
+.gx-ctheme--nu .gx-list--list .gx-card--list:hover::before { background: rgb(0 135 95); }

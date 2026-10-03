@@ -1,9 +1,10 @@
-import { CardOverlay, CardList, CardGrid } from './Cards';
+import { CardOverlay, CardList, CardGrid, SectionTitle } from './Cards';
 import LoadMore from './LoadMore';
 import { PageLayout, Breadcrumbs } from './Layout';
 import Icon from './Icon';
 
-export default function Archive({ config, data, query, heading, crumbs, headlineAllowed = true }) {
+/** `className` = kelas tambahan halaman (mis. tema kategori), `listTitle` = judul di atas daftar berita. */
+export default function Archive({ config, data, query, heading, crumbs, headlineAllowed = true, className = '', listTitle = '' }) {
 	const o = config.options;
 	const layout = o.archive_layout === 'grid' ? 'grid' : 'list';
 	const C = layout === 'grid' ? CardGrid : CardList;
@@ -14,12 +15,13 @@ export default function Archive({ config, data, query, heading, crumbs, headline
 		posts = posts.slice(1);
 	}
 	return (
-		<PageLayout config={config}>
+		<PageLayout config={config} className={className}>
 			<Breadcrumbs items={crumbs} />
 			{heading}
 			{head ? <CardOverlay post={head} opts={o} eager className="gx-card--hero gx-mb" /> : null}
 			{posts.length ? (
 				<div id="gx-post-list">
+					{listTitle ? <SectionTitle title={listTitle} /> : null}
 					<div className={`gx-list gx-list--${layout}`}>{posts.map((p) => <C key={p.id} post={p} opts={o} excerpt={o.show_excerpt} />)}</div>
 					{data.totalPages > 1 ? <LoadMore query={query} totalPages={data.totalPages} layout={layout} opts={o} excerpt={o.show_excerpt} /> : null}
 				</div>
