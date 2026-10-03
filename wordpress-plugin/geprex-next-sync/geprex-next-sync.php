@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Geprex Next Sync (Anti Blokir)
  * Description:       Mengirim data berita dari WordPress ke situs Next.js (Vercel). Vercel tidak perlu lagi meminta data ke hosting, jadi tidak terkena blokir firewall / reCAPTCHA hosting.
- * Version:           1.0.1
+ * Version:           1.1.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Deliknews
@@ -24,6 +24,7 @@ final class Geprex_Next_Sync {
 	const BATCH  = 20;       // artikel per kiriman "Kirim semua artikel"
 	const CHUNK  = 3000000;  // byte per permintaan ke Vercel (batas Vercel 4,5 MB)
 	const RECENT = 30;       // artikel terbaru yang selalu ikut dikirim bersama data utama
+	const TAGS   = 40;       // tag per kiriman "Kirim semua tag"
 
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
@@ -43,6 +44,7 @@ final class Geprex_Next_Sync {
 		add_action( 'wp_ajax_gxns_test', array( __CLASS__, 'ajax_test' ) );
 		add_action( 'wp_ajax_gxns_core', array( __CLASS__, 'ajax_core' ) );
 		add_action( 'wp_ajax_gxns_posts', array( __CLASS__, 'ajax_posts' ) );
+		add_action( 'wp_ajax_gxns_tags', array( __CLASS__, 'ajax_tags' ) );
 
 		register_activation_hook( __FILE__, array( __CLASS__, 'activate' ) );
 		register_deactivation_hook( __FILE__, array( __CLASS__, 'deactivate' ) );
@@ -158,6 +160,13 @@ final class Geprex_Next_Sync {
 		foreach ( get_posts( array( 'post_type' => 'post', 'post_status' => 'publish', 'posts_per_page' => self::RECENT, 'no_found_rows' => true ) ) as $p ) {
 			$items[] = self::item( 'post', array( 'slug' => self::slug( $p ) ) );
 		}
+		// Halaman statis (Redaksi, Tentang Kami, dll.) & halaman penulis.
+		foreach ( get_posts( array( 'post_type' => 'page', 'post_status' => 'publish', 'posts_per_page' => 200, 'no_found_rows' => true ) ) as $p ) {
+			$items[] = self::item( 'post', array( 'slug' => self::slug( $p ) ) );
+		}
+		foreach ( get_users( array( 'has_published_posts' => array( 'post' ), 'fields' => array( 'user_nicename' ), 'number' => 200 ) ) as $u ) {
+			$items[] = self::item( 'list', array( 'type' => 'author', 'slug' => $u->user_nicename ) );
+		}
 		$routes = rest_get_server()->get_routes();
 		if ( isset( $routes['/geprex-shorts/v1/videos'] ) ) {
 			list( $status, $data ) = self::internal( '/geprex-shorts/v1/videos' );
@@ -254,7 +263,7 @@ final class Geprex_Next_Sync {
 	/* ------------------------------------------------------------------ Otomatis */
 
 	public static function on_status( $new, $old, $post ) {
-		if ( 'post' !== $post->post_type || ! self::get()['auto'] ) {
+		if ( ! in_array( $post->post_type, array( 'post', 'page' ), true ) || ! self::get()['auto'] ) {
 			return;
 		}
 		if ( 'publish' === $new || 'publish' === $old ) {
@@ -297,7 +306,7 @@ final class Geprex_Next_Sync {
 			return;
 		}
 		if ( 'publish' === $post->post_status ) {
-			$items = self::post_items( $post );
+			$items = self::post_items( $post, 'post' === $post->post_type );
 		} else {
 			// Tidak terbit lagi (draf / sampah): tandai artikel tidak ada.
 			$items = array( array( 'key' => self::key( 'post', array( 'slug' => preg_replace( '/__trashed$/', '', self::slug( $post ) ) ) ), 'status' => 404 ) );
@@ -355,6 +364,19 @@ final class Geprex_Next_Sync {
 		self::reply( $items ? self::send( $items ) : 0, array( 'next' => $offset + count( $posts ), 'total' => $total, 'done' => count( $posts ) < self::BATCH ) );
 	}
 
+	public static function ajax_tags() {
+		self::guard();
+		$offset = isset( $_POST['offset'] ) ? absint( $_POST['offset'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification
+		$terms  = get_terms( array( 'taxonomy' => 'post_tag', 'hide_empty' => true, 'number' => self::TAGS, 'offset' => $offset, 'orderby' => 'count', 'order' => 'DESC' ) );
+		$terms  = is_wp_error( $terms ) ? array() : $terms;
+		$items  = array();
+		foreach ( $terms as $t ) {
+			$items[] = self::item( 'list', array( 'type' => 'tag', 'slug' => rawurldecode( $t->slug ) ) );
+		}
+		$total = (int) wp_count_terms( array( 'taxonomy' => 'post_tag', 'hide_empty' => true ) );
+		self::reply( $items ? self::send( array_values( array_filter( $items ) ) ) : 0, array( 'next' => $offset + count( $terms ), 'total' => $total, 'done' => count( $terms ) < self::TAGS ) );
+	}
+
 	/* ------------------------------------------------------------------ Halaman admin */
 
 	public static function page() {
@@ -397,8 +419,9 @@ final class Geprex_Next_Sync {
 				<button type="button" class="button" data-gxns="test">Uji koneksi</button>
 				<button type="button" class="button button-primary" data-gxns="core">Kirim data utama</button>
 				<button type="button" class="button" data-gxns="posts">Kirim semua artikel</button>
+				<button type="button" class="button" data-gxns="tags">Kirim semua tag</button>
 			</p>
-			<p class="description">Pertama kali: klik <strong>Kirim data utama</strong> (beranda, pengaturan, semua kategori, sitemap), lalu <strong>Kirim semua artikel</strong> agar artikel lama juga bisa dibuka. Biarkan halaman ini terbuka sampai selesai.</p>
+			<p class="description">Pertama kali: klik <strong>Kirim data utama</strong> (beranda, pengaturan, kategori, halaman statis, penulis, sitemap), lalu <strong>Kirim semua artikel</strong> dan <strong>Kirim semua tag</strong> agar artikel &amp; tag lama juga bisa dibuka. Biarkan halaman ini terbuka sampai selesai.</p>
 			<div id="gxns-log" style="margin-top:12px;padding:10px 12px;background:#fff;border:1px solid #c3c4c7;max-height:260px;overflow:auto;font-family:monospace;font-size:12px;display:none"></div>
 		</div>
 		<script>
@@ -415,11 +438,11 @@ final class Geprex_Next_Sync {
 				Object.keys(extra || {}).forEach(function (k) { f.append(k, extra[k]); });
 				return fetch(ajax, { method: 'POST', body: f, credentials: 'same-origin' }).then(function (r) { return r.json(); });
 			}
-			function posts(offset) {
-				return call('posts', { offset: offset }).then(function (r) {
+			function loop(action, label, offset) {
+				return call(action, { offset: offset }).then(function (r) {
 					if (!r.success) throw new Error(r.data && r.data.message || 'Gagal');
-					say('Artikel ' + Math.min(r.data.next, r.data.total) + ' / ' + r.data.total + ' terkirim');
-					return r.data.done ? null : posts(r.data.next);
+					say(label + ' ' + Math.min(r.data.next, r.data.total) + ' / ' + r.data.total + ' terkirim');
+					return r.data.done ? null : loop(action, label, r.data.next);
 				});
 			}
 			document.querySelectorAll('[data-gxns]').forEach(function (b) {
@@ -428,7 +451,7 @@ final class Geprex_Next_Sync {
 					busy = true;
 					var act = b.getAttribute('data-gxns');
 					say('— ' + b.textContent + '…');
-					var job = act === 'posts' ? posts(0) : call(act).then(function (r) {
+					var job = act === 'posts' ? loop('posts', 'Artikel', 0) : act === 'tags' ? loop('tags', 'Tag', 0) : call(act).then(function (r) {
 						if (!r.success) throw new Error(r.data && r.data.message || 'Gagal');
 						say(r.data.message || (r.data.saved + ' data terkirim'));
 					});

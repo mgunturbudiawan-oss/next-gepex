@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { permanentRedirect } from 'next/navigation';
-import { wp, getConfig, absolute, SITE_URL } from '@/lib/wp';
+import { wpOrNull, getConfig, absolute, SITE_URL } from '@/lib/wp';
+import { ClientPost } from '@/components/ClientFallback';
 import { PageLayout, Sidebar, Breadcrumbs, Share } from '@/components/Layout';
 import { Cat, Meta, CardGrid, SectionTitle } from '@/components/Cards';
 import Icon from '@/components/Icon';
@@ -19,7 +20,8 @@ const pathOf = (params) => '/' + (Array.isArray(params.slug) ? params.slug : [pa
 
 export async function generateMetadata(props) {
 	const params = await props.params;
-	const [config, post] = await Promise.all([getConfig(), wp('post', { slug: slugOf(params) })]);
+	const [config, post] = await Promise.all([getConfig(), wpOrNull('post', { slug: slugOf(params) })]);
+	if (!post) return { title: slugOf(params).replace(/-/g, ' '), alternates: { canonical: pathOf(params) } };
 	const url = absolute(post.path);
 	const images = post.seo.image ? [{ url: post.seo.image, width: post.image?.width, height: post.image?.height, alt: post.title }] : undefined;
 	return {
@@ -35,7 +37,9 @@ export async function generateMetadata(props) {
 
 export default async function SinglePage(props) {
 	const params = await props.params;
-	const [config, post] = await Promise.all([getConfig(), wp('post', { slug: slugOf(params) })]);
+	const [config, post] = await Promise.all([getConfig(), wpOrNull('post', { slug: slugOf(params) })]);
+	// Artikel/halaman belum terkirim & server diblokir hosting → diambil browser pengunjung.
+	if (!post) return <PageLayout config={config}><ClientPost slug={slugOf(params)} opts={config.options} /></PageLayout>;
 	// URL berbeda dari permalink resmi (mis. tanggal salah) → alihkan ke alamat yang benar.
 	if (post.path && post.path.startsWith('/') && decodeURI(post.path) !== pathOf(params)) {
 		permanentRedirect(post.path);
