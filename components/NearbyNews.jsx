@@ -22,20 +22,13 @@ async function fetchRegion(region) {
 		.slice(0, 4);
 }
 
-// Pin lokasi bergradasi dengan titik tengah (SVG khusus rubrik ini).
+// Pin lokasi sederhana.
 function PinIcon() {
 	return (
 		<svg className="gx-nearby__pin" viewBox="0 0 48 60" aria-hidden="true" focusable="false">
-			<defs>
-				<linearGradient id="gx-pin-g" x1="0" y1="0" x2="1" y2="1">
-					<stop offset="0" stopColor="#fff" />
-					<stop offset="1" stopColor="#ffe4e6" />
-				</linearGradient>
-			</defs>
-			<ellipse cx="24" cy="56" rx="10" ry="3" fill="rgba(0,0,0,.25)" />
-			<path d="M24 2C12.4 2 3 11.2 3 22.6 3 37.8 24 54 24 54s21-16.2 21-31.4C45 11.2 35.6 2 24 2z" fill="url(#gx-pin-g)" />
-			<circle cx="24" cy="22" r="8.5" fill="currentColor" />
-			<circle cx="24" cy="22" r="3.4" fill="#fff" />
+			<ellipse cx="24" cy="56" rx="9" ry="2.5" fill="currentColor" opacity=".18" />
+			<path d="M24 2C12.4 2 3 11.2 3 22.6 3 37.8 24 54 24 54s21-16.2 21-31.4C45 11.2 35.6 2 24 2z" fill="currentColor" />
+			<circle cx="24" cy="22" r="7.5" fill="#fff" />
 		</svg>
 	);
 }
@@ -49,18 +42,12 @@ function NavArrowIcon() {
 	);
 }
 
-/** Tombol "pakai lokasi": ikon panah GPS dalam lingkaran berdenyut + keterangan kecil. */
-function LocateButton({ onClick, busy, label, hint = 'Deteksi otomatis via GPS', variant = 'light' }) {
+/** Tombol "pakai lokasi" dengan ikon panah GPS. */
+function LocateButton({ onClick, busy, label }) {
 	return (
-		<button type="button" className={`gx-locbtn gx-locbtn--${variant}${busy ? ' is-busy' : ''}`} onClick={onClick} disabled={busy}>
-			<span className="gx-locbtn__ic" aria-hidden="true">
-				{busy ? <span className="gx-locbtn__spin" /> : <NavArrowIcon />}
-			</span>
-			<span className="gx-locbtn__text">
-				<span className="gx-locbtn__label">{label}</span>
-				<span className="gx-locbtn__hint">{busy ? 'Mohon tunggu sebentar…' : hint}</span>
-			</span>
-			{busy ? null : <Icon name="chevron-right" className="gx-locbtn__go" />}
+		<button type="button" className="gx-locbtn" onClick={onClick} disabled={busy}>
+			{busy ? <span className="gx-locbtn__spin" aria-hidden="true" /> : <NavArrowIcon />}
+			{label}
 		</button>
 	);
 }
@@ -146,7 +133,7 @@ export default function NearbyNews() {
 					</div>
 					{picking ? (
 						<div className="gx-nearby__picker">
-							<LocateButton onClick={locate} busy={busy} variant="solid" label={status === 'locating' ? 'Mencari lokasi…' : status === 'loading' ? 'Memuat berita…' : 'Pakai lokasi saya'} />
+							<LocateButton onClick={locate} busy={busy} label={status === 'locating' ? 'Mencari lokasi…' : status === 'loading' ? 'Memuat berita…' : 'Pakai lokasi saya'} />
 							<div className="gx-nearby__or"><span>atau pilih provinsi</span></div>
 							<RegionSelect value={region.id} onPick={pick} />
 						</div>
@@ -170,21 +157,11 @@ export default function NearbyNews() {
 				</>
 			) : (
 				<div className="gx-nearby__intro">
-					{/* Kartu radar: gelombang berdenyut dari pin, titik-titik provinsi berkedip. */}
-					<div className={`gx-nearby__hero${busy ? ' is-busy' : ''}`}>
-						<div className="gx-nearby__radar" aria-hidden="true">
-							<span className="gx-nearby__ring" /><span className="gx-nearby__ring" /><span className="gx-nearby__ring" />
-							<span className="gx-nearby__sweep" />
-							<span className="gx-nearby__blip" style={{ '--x': '18%', '--y': '30%', '--d': '0s' }} />
-							<span className="gx-nearby__blip" style={{ '--x': '78%', '--y': '24%', '--d': '.7s' }} />
-							<span className="gx-nearby__blip" style={{ '--x': '70%', '--y': '76%', '--d': '1.3s' }} />
-							<span className="gx-nearby__blip" style={{ '--x': '26%', '--y': '72%', '--d': '1.9s' }} />
-							<PinIcon />
-						</div>
+					<div className="gx-nearby__hero">
+						<PinIcon />
 						<p className="gx-nearby__headline">Berita di sekitarmu</p>
-						<p className="gx-nearby__sub">Kami cocokkan lokasimu dengan provinsi terdekat yang punya berita.</p>
+						<p className="gx-nearby__sub">Tampilkan berita dari provinsi terdekat dengan lokasimu.</p>
 						<LocateButton onClick={locate} busy={busy} label={status === 'locating' ? 'Mencari lokasi…' : status === 'loading' ? 'Memuat berita…' : 'Gunakan lokasi saya'} />
-
 					</div>
 					{msg ? <p className="gx-nearby__msg" role="status">{msg}</p> : null}
 					<div className="gx-nearby__or"><span>atau pilih provinsi</span></div>
