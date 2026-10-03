@@ -239,3 +239,30 @@
 	.gx-footer__brand { grid-column: 1 / -1; }
 	.gx-footer__menu a { overflow-wrap: anywhere; }
 }
+
+/* ---------- Beranda desktop: panel Trending setinggi headline + Short Video ---------- */
+.gx-tpanel { display: none; }
+@media (min-width: 1024px) {
+	.gx-hometop { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 1.5rem; align-items: stretch; margin-bottom: 1.5rem; }
+	.gx-hometop--left { grid-template-columns: 300px minmax(0, 1fr); }
+	.gx-hometop--left .gx-tpanel { order: -1; }
+	/* Tepi atas/bawah panel sejajar persis dengan headline & akhir Short Video. */
+	.gx-hometop__main > :first-child { margin-top: 0; }
+	.gx-hometop__main > :last-child { margin-bottom: 0; }
+	/* Panel tidak ikut menentukan tinggi baris → tingginya mengikuti kolom kiri. */
+	.gx-tpanel { display: block; position: relative; min-height: 22rem; }
+	.gx-page--tpanel .gx-aside .gx-widget--trending { display: none; }
+}
+.gx-tpanel__box { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 1rem 1rem 0; overflow: hidden; background: rgb(var(--gx-card)); border: 1px solid rgb(var(--gx-line)); border-radius: var(--gx-radius); }
+.gx-tpanel__title .gx-icon { color: rgb(var(--gx-accent)); }
+.gx-tpanel__list { flex: 1; min-height: 0; margin: 0 -1rem; padding: 0 1rem 3.5rem; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgb(var(--gx-line)) transparent; }
+/* Gradasi di bawah: tanda daftar masih bisa digulir. */
+.gx-tpanel__box::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4.5rem; pointer-events: none; border-radius: 0 0 var(--gx-radius) var(--gx-radius); background: linear-gradient(180deg, rgb(var(--gx-card) / 0), rgb(var(--gx-card)) 85%); }
+.gx-tpanel__item { display: flex; align-items: flex-start; gap: .75rem; padding: .75rem 0; border-bottom: 1px solid rgb(var(--gx-line)); }
+.gx-tpanel__item:last-child { border-bottom: 0; }
+/* Nomor dalam lingkaran tanpa latar. */
+.gx-tpanel__num { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border: 2px solid rgb(var(--gx-primary)); border-radius: 50%; background: none; color: rgb(var(--gx-primary)); font-family: var(--gx-font-heading); font-weight: 800; font-size: .9rem; line-height: 1; }
+.gx-tpanel__body { min-width: 0; }
+.gx-tpanel__name { margin: 0; font-size: .9rem; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.gx-tpanel__name a { color: rgb(var(--gx-heading)); }
+.gx-tpanel__name a:hover { color: rgb(var(--gx-primary)); }

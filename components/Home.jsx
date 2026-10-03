@@ -68,6 +68,39 @@ export function Headline({ home, opts }) {
 	);
 }
 
+/** 8 berita trending untuk panel samping beranda: trending WordPress, digenapkan dengan berita terbaru yang paling banyak dibaca. */
+export function pickTrending(config, home, count = 8) {
+	const base = [list(home.trending), list(config.trending)].sort((a, b) => b.length - a.length)[0];
+	const seen = new Set(base.map((p) => p.id));
+	const extra = [...list(home.latest), ...list(home.sections).flatMap((s) => list(s.posts))]
+		.filter((p) => p && !seen.has(p.id) && seen.add(p.id))
+		.sort((a, b) => (Number(b.views) || 0) - (Number(a.views) || 0));
+	return [...base, ...extra].slice(0, count);
+}
+
+/** Desktop: panel Trending setinggi headline + Short Video; daftar bisa digulir dengan gradasi di bawah. */
+export function TrendingPanel({ posts, opts, title }) {
+	if (!posts.length) return null;
+	return (
+		<aside className="gx-tpanel" aria-labelledby="gx-tpanel-title">
+			<div className="gx-tpanel__box">
+				<h2 className="gx-widget__title gx-tpanel__title" id="gx-tpanel-title"><Icon name="fire" /> {title}</h2>
+				<ol className="gx-tpanel__list">
+					{posts.map((p, i) => (
+						<li key={p.id} className="gx-tpanel__item">
+							<span className="gx-tpanel__num" aria-hidden="true">{i + 1}</span>
+							<div className="gx-tpanel__body">
+								<h3 className="gx-tpanel__name"><Link href={p.path}>{p.title}</Link></h3>
+								<Meta post={p} opts={opts} views />
+							</div>
+						</li>
+					))}
+				</ol>
+			</div>
+		</aside>
+	);
+}
+
 export function Trending({ posts, opts }) {
 	if (!opts.home_trending_enable || !posts.length) return null;
 	return (

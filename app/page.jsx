@@ -1,6 +1,6 @@
 import { wp, getConfig, SITE_URL } from '@/lib/wp';
 import { PageLayout, Sidebar } from '@/components/Layout';
-import { Headline, Trending, Latest, Sections, Special } from '@/components/Home';
+import { Headline, Trending, Latest, Sections, Special, TrendingPanel, pickTrending } from '@/components/Home';
 import ShortVideos from '@/components/ShortVideos';
 import { SHORTS } from '@/lib/shorts';
 
@@ -24,10 +24,20 @@ export default async function HomePage() {
 			<ShortVideos videos={SHORTS} />
 		</>
 	);
+	// Desktop: headline + Short Video berdampingan dengan panel Trending setinggi keduanya.
+	// Widget Trending di sidebar disembunyikan di desktop (CSS) agar tidak dobel; HP tetap seperti biasa.
+	const pos = o.sidebar_position;
+	const panel = !wide && !hideSideTrend && o.sidebar_trending && (pos === 'right' || pos === 'left');
+	const before = wide ? top : panel ? (
+		<div className={`gx-hometop gx-hometop--${pos}`}>
+			<div className="gx-hometop__main">{top}</div>
+			<TrendingPanel posts={pickTrending(config, home)} opts={o} title={o.trending_title} />
+		</div>
+	) : null;
 	return (
-		<PageLayout config={config} className="gx-page--home" before={wide ? top : null} sidebar={<Sidebar config={config} hideTrending={hideSideTrend} />}>
+		<PageLayout config={config} className={`gx-page--home${panel ? ' gx-page--tpanel' : ''}`} before={before} sidebar={<Sidebar config={config} hideTrending={hideSideTrend} />}>
 			<h1 className="screen-reader-text">{config.site.name} — {config.site.description}</h1>
-			{!wide ? top : null}
+			{!wide && !panel ? top : null}
 			{home.style !== 'style3' ? <Trending posts={home.trending} opts={o} /> : null}
 			<Latest home={home} config={config} />
 			<Sections sections={home.sections} opts={o} />
