@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Geprex Next Sync (Anti Blokir)
  * Description:       Mengirim data berita dari WordPress ke situs Next.js (Vercel). Vercel tidak perlu lagi meminta data ke hosting, jadi tidak terkena blokir firewall / reCAPTCHA hosting.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Deliknews
@@ -23,6 +23,7 @@ final class Geprex_Next_Sync {
 	const CORE   = 'gxns_push_core';
 	const BATCH  = 20;       // artikel per kiriman "Kirim semua artikel"
 	const CHUNK  = 3000000;  // byte per permintaan ke Vercel (batas Vercel 4,5 MB)
+	const RECENT = 30;       // artikel terbaru yang selalu ikut dikirim bersama data utama
 
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
@@ -152,6 +153,10 @@ final class Geprex_Next_Sync {
 			for ( $p = 2; $p <= 4; $p++ ) {
 				$items[] = self::item( 'list', array( 'type' => 'latest', 'exclude' => $exclude, 'page' => $p ) );
 			}
+		}
+		// Artikel terbaru (yang tampil di beranda) selalu ikut dikirim, agar bisa dibuka tanpa "Kirim semua artikel".
+		foreach ( get_posts( array( 'post_type' => 'post', 'post_status' => 'publish', 'posts_per_page' => self::RECENT, 'no_found_rows' => true ) ) as $p ) {
+			$items[] = self::item( 'post', array( 'slug' => self::slug( $p ) ) );
 		}
 		$routes = rest_get_server()->get_routes();
 		if ( isset( $routes['/geprex-shorts/v1/videos'] ) ) {
