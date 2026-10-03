@@ -70,6 +70,21 @@ npm start                    # port 3000, atau PORT=8080 npm start
 Jalankan di belakang Nginx/Apache sebagai reverse proxy, dan pakai PM2 agar tetap hidup:
 `pm2 start npm --name geprex-next -- start`.
 
+## Mode anti blokir (Vercel + hosting dengan firewall/reCAPTCHA)
+Bila hosting WordPress memblokir server Vercel (403, "Bot Verification", timeout), balik arah datanya:
+WordPress **mengirim** data ke Vercel, Vercel tidak perlu meminta.
+
+1. Vercel → project → **Storage** → **Upstash for Redis** (gratis) → **Connect** ke project ini.
+   Variabel `KV_REST_API_URL` & `KV_REST_API_TOKEN` terisi otomatis.
+2. Vercel → **Environment Variables** → `REVALIDATE_SECRET` = kunci acak panjang. **Redeploy**.
+3. WordPress → pasang plugin `wordpress-plugin/geprex-next-sync` (zip folder itu) → **Pengaturan → Next Sync**:
+   isi alamat situs Vercel + kunci yang sama → **Uji koneksi** → **Kirim data utama** → **Kirim semua artikel**.
+4. Cek `https://<situs>/api/cek-wp/` → `anti_blokir.aktif: true`, `beranda_tersimpan: true`.
+
+Setelah itu plugin mengirim otomatis saat berita terbit/diubah/dihapus, komentar disetujui, Customizer
+disimpan, dan setiap jam. Aksi pengunjung (komentar, hitungan dibaca, muat lebih banyak, pencarian)
+dikirim langsung dari browser pengunjung ke WordPress.
+
 ## Cara kerja pembaruan
 - Halaman di-cache selama `REVALIDATE` detik.
 - Saat berita/halaman/menu/Customizer disimpan, WordPress memanggil `/api/revalidate` sehingga

@@ -6,15 +6,16 @@ import Link from 'next/link';
 import Icon from './Icon';
 import { Thumb } from './Cards';
 import { REGIONS, nearestRegions } from '@/lib/regions';
+import { fetchWithFallback } from '@/lib/wp-browser';
 
 const STORE_KEY = 'gx-nearby-region';
 
 // Gabungkan berita semua kategori provinsi, urutkan terbaru, ambil 4 (1 utama + 3 daftar).
 async function fetchRegion(region) {
-	const lists = await Promise.all(region.slugs.map((slug) =>
-		fetch(`/api/posts/?type=category&slug=${encodeURIComponent(slug)}`)
-			.then((r) => (r.ok ? r.json() : { posts: [] }))
-			.catch(() => ({ posts: [] }))));
+	const lists = await Promise.all(region.slugs.map((slug) => {
+		const qs = `type=category&slug=${encodeURIComponent(slug)}`;
+		return fetchWithFallback(`/api/posts/?${qs}`, `hl/list?${qs}`).catch(() => ({ posts: [] }));
+	}));
 	const seen = new Set();
 	return lists.flatMap((d) => d.posts || [])
 		.filter((p) => !seen.has(p.id) && seen.add(p.id))

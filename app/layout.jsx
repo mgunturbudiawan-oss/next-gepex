@@ -53,7 +53,7 @@ export default async function RootLayout({ children }) {
 	const o = config.options;
 	const bodyClass = ['gx-sidebar-' + o.sidebar_position, o.mobile_bottom_nav ? 'gx-has-bottom-nav' : '', o.sticky_header ? 'gx-sticky-header' : ''].join(' ');
 	return (
-		<html lang={(config.site.language || 'id').split('-')[0]} suppressHydrationWarning>
+		<html lang={(config.site.language || 'id').split('-')[0]} data-wp={config.site.wpUrl || undefined} suppressHydrationWarning>
 			<head>
 				<script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js');" + darkBoot(o) }} />
 				{config.fontsUrl ? <><link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" /><link rel="stylesheet" href={config.fontsUrl} /></> : null}

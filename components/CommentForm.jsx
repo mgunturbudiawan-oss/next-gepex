@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { wpBase } from '@/lib/wp-browser';
 
 export default function CommentForm({ postId, parent = 0 }) {
 	const [state, setState] = useState({ status: 'idle', message: '' });
@@ -9,11 +10,17 @@ export default function CommentForm({ postId, parent = 0 }) {
 		const f = new FormData(e.currentTarget);
 		setState({ status: 'sending', message: '' });
 		try {
-			const res = await fetch('/api/comment/', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ post: postId, parent, author: f.get('author'), email: f.get('email'), content: f.get('comment') }),
-			});
+			const payload = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ post: postId, parent, author: f.get('author'), email: f.get('email'), content: f.get('comment') }) };
+			// Langsung dari browser ke WordPress (tidak kena blokir server); proxy Next.js sebagai cadangan.
+			const base = wpBase();
+			let res;
+			try {
+				if (!base) throw new Error();
+				res = await fetch(`${base}/wp-json/geprex/v1/hl/comment`, payload);
+				if (!(res.headers.get('content-type') || '').includes('json')) throw new Error();
+			} catch {
+				res = await fetch('/api/comment/', payload);
+			}
 			const data = await res.json();
 			if (!res.ok) throw new Error(data.message || 'Gagal mengirim komentar');
 			setState({ status: 'done', message: data.message });

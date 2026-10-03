@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { CardList, CardGrid } from './Cards';
 import { SkCardList, SkGrid } from './Skeleton';
+import { fetchWithFallback } from '@/lib/wp-browser';
 
 // Tombol "Muat Berita Lainnya": memanggil /api/posts (proxy ke WordPress).
 export default function LoadMore({ query, startPage = 2, totalPages, layout = 'list', opts, excerpt }) {
@@ -15,9 +16,8 @@ export default function LoadMore({ query, startPage = 2, totalPages, layout = 'l
 		setState('loading');
 		try {
 			const qs = new URLSearchParams({ ...query, page: String(page) });
-			const res = await fetch(`/api/posts/?${qs}`);
-			if (!res.ok) throw new Error();
-			const data = await res.json();
+			// Proxy Next.js dulu; bila server diblokir hosting, minta langsung dari browser.
+			const data = await fetchWithFallback(`/api/posts/?${qs}`, `hl/list?${qs}`);
 			setItems((prev) => prev.concat(data.posts || []));
 			setPage(page + 1);
 			if (data.totalPages) setTotal(data.totalPages);

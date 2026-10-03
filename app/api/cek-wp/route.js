@@ -1,4 +1,5 @@
 import { WP_URL, SITE_URL, WP_UA } from '@/lib/wp';
+import { storeEnabled, storeCount, storeGet } from '@/lib/store';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +12,8 @@ export async function GET() {
 		revalidate_secret_diisi: Boolean(process.env.REVALIDATE_SECRET),
 		site_url_dari_env: Boolean(process.env.SITE_URL),
 		node: process.version,
+		// Mode anti blokir: data dikirim WordPress (plugin Geprex Next Sync) ke Redis.
+		anti_blokir: storeEnabled ? { aktif: true, entri_tersimpan: await storeCount().catch(() => null), beranda_tersimpan: Boolean(await storeGet('home').catch(() => null)) } : { aktif: false, cara: 'Vercel → Storage → Upstash Redis → Connect ke project, lalu redeploy' },
 	};
 	const t = Date.now();
 	try {
