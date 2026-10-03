@@ -1,0 +1,8 @@
+.gxsv-table td { vertical-align: top; }
+.gxsv-table input[type="text"] { display: block; width: 100%; margin-bottom: 6px; }
+.gxsv-table input.gxsv-bad { border-color: #d63638; box-shadow: 0 0 0 1px #d63638; }
+.gxsv-thumb img { display: block; width: 60px; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 4px; background: #ddd; }
+.gxsv-nums label { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; }
+.gxsv-nums input { width: 90px; }
+.gxsv-actions { white-space: nowrap; }
+.gxsv-actions .button-link-delete { margin-left: 6px; vertical-align: middle; }

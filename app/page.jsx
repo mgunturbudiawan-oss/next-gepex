@@ -1,4 +1,4 @@
-import { wp, getConfig, SITE_URL } from '@/lib/wp';
+import { wp, getConfig, getShorts, SITE_URL } from '@/lib/wp';
 import { PageLayout, Sidebar } from '@/components/Layout';
 import { Headline, Trending, Latest, Sections, Special, TrendingPanel, pickTrending } from '@/components/Home';
 import ShortVideos from '@/components/ShortVideos';
@@ -9,7 +9,7 @@ import { SHORTS } from '@/lib/shorts';
 const TRENDING_PANEL = false;
 
 export default async function HomePage() {
-	const [config, home] = await Promise.all([getConfig(), wp('home')]);
+	const [config, home, shorts] = await Promise.all([getConfig(), wp('home'), getShorts()]);
 	if (!config.licensed) return null;
 	const o = config.options;
 	const jsonLd = {
@@ -25,7 +25,8 @@ export default async function HomePage() {
 		<>
 			<Special special={home.special} />
 			<Headline home={home} opts={o} />
-			<ShortVideos videos={SHORTS} />
+			{/* Dari plugin WordPress "Geprex Short Video"; bila plugin belum aktif pakai lib/shorts.js. */}
+			{shorts ? (shorts.enabled ? <ShortVideos videos={shorts.videos} title={shorts.title || undefined} /> : null) : <ShortVideos videos={SHORTS} />}
 		</>
 	);
 	// Desktop: headline + Short Video berdampingan dengan panel Trending setinggi keduanya.
