@@ -289,3 +289,19 @@
 	.gx-page--home .gx-card--list { align-items: center; }
 	.gx-page--home .gx-card--list .gx-card__title { font-size: 1.25rem; line-height: 1.32; }
 }
+
+/* ---------- Rekomendasi untuk Anda (setelah berita terkini ke-3): foto di atas, judul di bawah, tanpa kartu ---------- */
+.gx-reco { padding: 1.1rem 0 1.25rem; border-bottom: 1px solid rgb(var(--gx-line)); }
+.gx-reco__head { margin-bottom: .85rem; }
+.gx-reco__title { margin: 0; font-size: 1.15rem; font-weight: 800; color: rgb(var(--gx-heading)); }
+.gx-reco__sub { margin: .15rem 0 0; font-size: .8rem; color: rgb(var(--gx-muted)); }
+.gx-reco__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem .85rem; }
+@media (min-width: 640px) { .gx-reco__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem 1rem; } }
+.gx-reco__item { min-width: 0; }
+.gx-reco__media { display: block; aspect-ratio: 16 / 10; margin-bottom: .5rem; overflow: hidden; border-radius: 4px; background: rgb(var(--gx-line)); }
+.gx-reco__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.gx-reco__item:hover .gx-reco__media img { transform: scale(1.05); }
+.gx-reco__cat { display: inline-block; margin-bottom: .2rem; font-size: .7rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: rgb(var(--gx-primary)); }
+.gx-reco__name { margin: 0; font-size: .92rem; font-weight: 700; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.gx-reco__name a { color: rgb(var(--gx-heading)); }
+.gx-reco__name a:hover { color: rgb(var(--gx-primary)); }

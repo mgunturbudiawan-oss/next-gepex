@@ -145,6 +145,47 @@ export function Topics({ topics, opts }) {
 	);
 }
 
+// Rekomendasi muncul setelah berita terkini ke-3.
+const RECO_AFTER = 3;
+
+const decode = (s = '') => String(s).replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#0?39;|&#8217;/g, '’').replace(/&#8211;/g, '–');
+
+/** 6 berita dari kategori berbeda (1 per kanal beranda), yang belum tampil di headline/terkini. */
+function pickRecommend(home, count = 6) {
+	const used = new Set([...list(home.headline), ...list(home.latest)].map((p) => p.id));
+	const pools = list(home.sections).map((s) => list(s.posts).filter((p) => p && !used.has(p.id)));
+	const out = [];
+	// Putaran pertama: satu per kategori; bila kurang, ambil berita berikutnya dari kanal yang sama.
+	for (let round = 0; out.length < count && pools.some((pool) => pool.length > round); round++) {
+		for (const pool of pools) {
+			const p = pool[round];
+			if (p && !used.has(p.id) && out.length < count) { used.add(p.id); out.push(p); }
+		}
+	}
+	return out;
+}
+
+function Recommend({ posts }) {
+	if (posts.length < 2) return null;
+	return (
+		<section className="gx-reco" aria-labelledby="gx-reco-title">
+			<div className="gx-reco__head">
+				<h2 className="gx-reco__title" id="gx-reco-title">Rekomendasi untuk Anda</h2>
+				<p className="gx-reco__sub">Dari berbagai kategori</p>
+			</div>
+			<div className="gx-reco__grid">
+				{posts.map((p) => (
+					<article key={p.id} className="gx-reco__item">
+						<Link className="gx-reco__media" href={p.path} tabIndex={-1} aria-hidden="true"><Thumb post={p} sizes="(max-width: 640px) 50vw, 220px" /></Link>
+						{p.category ? <Link className="gx-reco__cat" href={p.category.path}>{decode(p.category.name)}</Link> : null}
+						<h3 className="gx-reco__name"><Link href={p.path}>{p.title}</Link></h3>
+					</article>
+				))}
+			</div>
+		</section>
+	);
+}
+
 export function Latest({ home, config }) {
 	const opts = config.options;
 	const after = parseInt(opts.home_topics_after, 10) || 0;
@@ -152,8 +193,10 @@ export function Latest({ home, config }) {
 	const topics = <Topics topics={home.topics} opts={opts} />;
 	const posts = home.latest;
 	const split = after > 0 && posts.length > after;
+	const reco = pickRecommend(home);
 	const render = (list, offset) => list.map((p, i) => [
 		<CardList key={p.id} post={p} opts={opts} excerpt={opts.show_excerpt} />,
+		offset + i + 1 === RECO_AFTER ? <Recommend key="reco" posts={reco} /> : null,
 		opts.ad_home_list && offset + i + 1 === adAfter ? <Ad key="ad" config={config} slot="home_list" className="gx-list__ad" /> : null,
 	]);
 	return (
