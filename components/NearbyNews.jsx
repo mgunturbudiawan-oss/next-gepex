@@ -1,6 +1,6 @@
 'use client';
 // Rubrik sidebar "Berita Sekitar Anda": lokasi pengunjung (GPS/browser) → provinsi terdekat yang punya berita.
-// Tampilan: 1 berita dengan gambar di atas & judul di bawah, lalu 4 daftar berita.
+// Tampilan: 1 berita dengan gambar di atas & judul di bawah, lalu 3 daftar berita.
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Icon from './Icon';
@@ -9,7 +9,7 @@ import { REGIONS, nearestRegions } from '@/lib/regions';
 
 const STORE_KEY = 'gx-nearby-region';
 
-// Gabungkan berita semua kategori provinsi, urutkan terbaru, ambil 5.
+// Gabungkan berita semua kategori provinsi, urutkan terbaru, ambil 4 (1 utama + 3 daftar).
 async function fetchRegion(region) {
 	const lists = await Promise.all(region.slugs.map((slug) =>
 		fetch(`/api/posts/?type=category&slug=${encodeURIComponent(slug)}`)
@@ -19,7 +19,7 @@ async function fetchRegion(region) {
 	return lists.flatMap((d) => d.posts || [])
 		.filter((p) => !seen.has(p.id) && seen.add(p.id))
 		.sort((a, b) => new Date(b.date) - new Date(a.date))
-		.slice(0, 5);
+		.slice(0, 4);
 }
 
 function RegionSelect({ value, onPick }) {
@@ -114,7 +114,7 @@ export default function NearbyNews() {
 					</article>
 					{rest.length ? (
 						<ul className="gx-nearby__list">
-							{rest.slice(0, 4).map((p) => (
+							{rest.slice(0, 3).map((p) => (
 								<li key={p.id}>
 									<Link href={p.path}>{p.title}</Link>
 									<span className="gx-nearby__time">{p.ago || p.dateText}</span>
