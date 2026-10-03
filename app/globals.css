@@ -421,3 +421,22 @@ body:has(.gx-ctheme--nu) {
 .gx-ctheme--nu .gx-list--list .gx-card--list { position: relative; padding-left: .85rem; }
 .gx-ctheme--nu .gx-list--list .gx-card--list::before { content: ""; position: absolute; left: 0; top: .9rem; bottom: .9rem; width: 3px; border-radius: 3px; background: rgb(0 135 95 / .25); transition: background .2s; }
 .gx-ctheme--nu .gx-list--list .gx-card--list:hover::before { background: rgb(0 135 95); }
+
+/* ---------- Mode gelap: hitam pekat ---------- */
+/* :root.dark lebih kuat dari .dark bawaan tema & CSS Customizer (biru tua). */
+:root.dark {
+	--gx-page: 0 0 0;          /* latar halaman: hitam */
+	--gx-card: 14 14 14;       /* kartu / kotak: #0e0e0e */
+	--gx-header: 0 0 0;        /* header */
+	--gx-line: 38 38 38;       /* garis pemisah: #262626 */
+	--gx-text: 214 214 214;
+	--gx-muted: 140 140 140;
+	--gx-heading: 245 245 245;
+	--gx-footer: 0 0 0;
+	--gx-footer-text: 170 170 170;
+	color-scheme: dark;
+}
+:root.dark .gx-footer { border-top: 1px solid rgb(var(--gx-line)); }
+:root.dark .gx-share__btn--x { background: #262626; }
+:root.dark .sk::after { background: linear-gradient(90deg, transparent, rgb(255 255 255 / .06), transparent); }
+:root.dark .gx-content pre { background: #141414; }

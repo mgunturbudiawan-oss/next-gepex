@@ -37,7 +37,8 @@ export async function generateViewport() {
 function darkBoot(o) {
 	if (o.dark_mode === 'off') return '';
 	if (o.dark_mode === 'always') return "document.documentElement.classList.add('dark');";
-	return `(function(){try{var t=localStorage.getItem('theme'),d=${JSON.stringify(o.dark_default)};if(t==='dark'||(!t&&(d==='dark'||(d==='system'&&matchMedia('(prefers-color-scheme: dark)').matches))))document.documentElement.classList.add('dark');}catch(e){}})();`;
+	// Kunjungan pertama selalu terang; mode gelap hanya bila pengunjung pernah memilihnya (tombol 🌙).
+	return "(function(){try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');}catch(e){}})();";
 }
 
 export default async function RootLayout({ children }) {
