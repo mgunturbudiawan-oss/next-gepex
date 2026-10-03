@@ -361,3 +361,21 @@
 	.gx-page--after > .gx-page__after { order: 2; }
 	.gx-page--after > .gx-layout > .gx-aside { order: 3; margin-top: 1.5rem; }
 }
+
+/* ---------- Rubrik kategori: 3 kolom, 1 berita bergambar + 3 daftar tanpa foto ---------- */
+.gx-rubrik { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem 1.5rem; margin-top: 2rem; }
+@media (min-width: 640px) { .gx-rubrik { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .gx-rubrik { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.gx-rubrik__col { min-width: 0; display: flex; flex-direction: column; }
+.gx-rubrik__col .gx-section-head { margin-bottom: .75rem; }
+.gx-rubrik__media { display: block; aspect-ratio: 16 / 10; margin-bottom: .6rem; overflow: hidden; border-radius: 4px; background: rgb(var(--gx-line)); }
+.gx-rubrik__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.gx-rubrik__lead:hover .gx-rubrik__media img { transform: scale(1.04); }
+.gx-rubrik__title { margin: 0; font-size: 1.05rem; font-weight: 700; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.gx-rubrik__title a, .gx-rubrik__list a { color: rgb(var(--gx-heading)); }
+.gx-rubrik__title a:hover, .gx-rubrik__list a:hover { color: rgb(var(--gx-primary)); }
+.gx-rubrik__time { display: block; margin-top: .25rem; font-size: .72rem; color: rgb(var(--gx-muted)); }
+.gx-rubrik__list { margin: .8rem 0 0; padding: 0; list-style: none; border-top: 1px solid rgb(var(--gx-line)); }
+.gx-rubrik__list li { padding: .65rem 0; border-bottom: 1px solid rgb(var(--gx-line)); }
+.gx-rubrik__list li:last-child { border-bottom: 0; }
+.gx-rubrik__list a { font-size: .9rem; font-weight: 600; line-height: 1.38; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

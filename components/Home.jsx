@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Icon from './Icon';
 import Ad from './Ad';
 import LoadMore from './LoadMore';
-import { CardOverlay, CardList, CardGrid, CardMini, Meta, Thumb, SectionTitle } from './Cards';
+import { CardOverlay, CardList, CardMini, Meta, Thumb, SectionTitle } from './Cards';
 import HeadlineSlider from './HeadlineSlider';
 import { list, decodeHtml } from '@/lib/list';
 
@@ -213,18 +213,35 @@ export function Latest({ home, config }) {
 	);
 }
 
+/** Rubrik kategori: 3 kolom; tiap kolom 1 berita bergambar besar + 3 daftar berita tanpa foto. */
 export function Sections({ sections, opts }) {
-	const mGrid = opts.home_mobile_grid;
-	const mCount = Math.max(2, parseInt(opts.home_mobile_count, 10) || 4);
-	return sections.map((s) => (
-		<section key={s.path} className={`gx-section gx-sec gx-sec--${s.layout}${mGrid ? ' gx-sec--mgrid' : ''}`}>
-			<SectionTitle title={s.title} href={opts.home_sections_title_link ? s.path : ''} />
-			<div className="gx-sec__items">
-				{s.posts.map((p, i) => {
-					const cls = [i === 0 ? 'gx-sec__first' : '', i >= s.count ? 'gx-hide-d' : '', mGrid && i >= mCount ? 'gx-hide-m' : ''].filter(Boolean).join(' ');
-					return <CardGrid key={p.id} post={p} opts={opts} className={cls} />;
-				})}
-			</div>
-		</section>
-	));
+	const items = list(sections).filter((s) => list(s.posts).length);
+	if (!items.length) return null;
+	return (
+		<div className="gx-rubrik">
+			{items.map((s) => {
+				const [lead, ...rest] = list(s.posts);
+				return (
+					<section key={s.path} className="gx-rubrik__col" aria-label={decodeHtml(s.title)}>
+						<SectionTitle title={s.title} href={opts.home_sections_title_link ? s.path : ''} />
+						<article className="gx-rubrik__lead">
+							<Link className="gx-rubrik__media" href={lead.path} tabIndex={-1} aria-hidden="true"><Thumb post={lead} sizes="(max-width: 640px) 100vw, 320px" /></Link>
+							<h3 className="gx-rubrik__title"><Link href={lead.path}>{lead.title}</Link></h3>
+							<span className="gx-rubrik__time">{lead.ago || lead.dateText}</span>
+						</article>
+						{rest.length ? (
+							<ul className="gx-rubrik__list">
+								{rest.slice(0, 3).map((p) => (
+									<li key={p.id}>
+										<Link href={p.path}>{p.title}</Link>
+										<span className="gx-rubrik__time">{p.ago || p.dateText}</span>
+									</li>
+								))}
+							</ul>
+						) : null}
+					</section>
+				);
+			})}
+		</div>
+	);
 }
