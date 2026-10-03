@@ -169,9 +169,9 @@ function Recommend({ posts }) {
 	if (posts.length < 2) return null;
 	return (
 		<section className="gx-reco" aria-labelledby="gx-reco-title">
-			<div className="gx-reco__head">
-				<h2 className="gx-reco__title" id="gx-reco-title">Rekomendasi untuk Anda</h2>
-				<p className="gx-reco__sub">Dari berbagai kategori</p>
+			<div className="gx-section-head gx-reco__head">
+				<h2 className="gx-section-title" id="gx-reco-title"><span className="gx-section-bar gx-reco__bar" aria-hidden="true" />Rekomendasi untuk Anda</h2>
+				<Link className="gx-section-more" href="/indeks/">Selengkapnya <Icon name="chevron-right" /></Link>
 			</div>
 			<div className="gx-reco__grid">
 				{posts.map((p) => (

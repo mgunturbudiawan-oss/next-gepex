@@ -293,8 +293,7 @@
 /* ---------- Rekomendasi untuk Anda (setelah berita terkini ke-3): foto di atas, judul di bawah, tanpa kartu ---------- */
 .gx-reco { padding: 1.1rem 0 1.25rem; border-bottom: 1px solid rgb(var(--gx-line)); }
 .gx-reco__head { margin-bottom: .85rem; }
-.gx-reco__title { margin: 0; font-size: 1.15rem; font-weight: 800; color: rgb(var(--gx-heading)); }
-.gx-reco__sub { margin: .15rem 0 0; font-size: .8rem; color: rgb(var(--gx-muted)); }
+.gx-reco__bar { background: rgb(var(--gx-accent)); }
 .gx-reco__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem .85rem; }
 @media (min-width: 640px) { .gx-reco__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem 1rem; } }
 .gx-reco__item { min-width: 0; }
