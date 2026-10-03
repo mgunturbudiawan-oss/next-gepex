@@ -25,8 +25,9 @@ export default async function HomePage() {
 		<>
 			<Special special={home.special} />
 			<Headline home={home} opts={o} />
-			{/* Dari plugin WordPress "Geprex Short Video"; bila plugin belum aktif pakai lib/shorts.js. */}
-			{shorts ? (shorts.enabled ? <ShortVideos videos={shorts.videos} title={shorts.title || undefined} /> : null) : <ShortVideos videos={SHORTS} />}
+			{/* Dari plugin WordPress "Geprex Short Video". Plugin belum aktif / daftarnya masih kosong → pakai lib/shorts.js;
+			    "Tampilkan" dimatikan di plugin → disembunyikan. */}
+			{shorts && !shorts.enabled ? null : <ShortVideos videos={shorts?.videos.length ? shorts.videos : SHORTS} title={shorts?.title || undefined} />}
 		</>
 	);
 	// Desktop: headline + Short Video berdampingan dengan panel Trending setinggi keduanya.
