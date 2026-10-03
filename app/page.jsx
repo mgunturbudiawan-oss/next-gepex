@@ -4,6 +4,10 @@ import { Headline, Trending, Latest, Sections, Special, TrendingPanel, pickTrend
 import ShortVideos from '@/components/ShortVideos';
 import { SHORTS } from '@/lib/shorts';
 
+// Panel Trending di samping headline (desktop). Sementara dimatikan: Trending tampil di sidebar (sticky).
+// Ubah ke `true` untuk menyalakan lagi.
+const TRENDING_PANEL = false;
+
 export default async function HomePage() {
 	const [config, home] = await Promise.all([getConfig(), wp('home')]);
 	if (!config.licensed) return null;
@@ -27,7 +31,7 @@ export default async function HomePage() {
 	// Desktop: headline + Short Video berdampingan dengan panel Trending setinggi keduanya.
 	// Widget Trending di sidebar disembunyikan di desktop (CSS) agar tidak dobel; HP tetap seperti biasa.
 	const pos = o.sidebar_position;
-	const panel = !wide && !hideSideTrend && o.sidebar_trending && (pos === 'right' || pos === 'left');
+	const panel = TRENDING_PANEL && !wide && !hideSideTrend && o.sidebar_trending && (pos === 'right' || pos === 'left');
 	const before = wide ? top : panel ? (
 		<div className={`gx-hometop gx-hometop--${pos}`}>
 			<div className="gx-hometop__main">{top}</div>
