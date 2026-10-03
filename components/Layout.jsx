@@ -81,15 +81,6 @@ export function Header({ config }) {
 							</button>
 						) : null}
 					</div>
-					<div id="gx-mobile-menu" className="gx-drop" hidden>
-						<SearchForm id="gx-mobile-search" className="gx-search--drop" />
-						<p className="gx-drop__label">Kanal</p>
-						<nav aria-label="Menu mobile"><MenuList items={list(config.menus?.main)} className="gx-drop__grid" icons /></nav>
-						<div className="gx-drop__foot">
-							<Link href="/indeks/"><Icon name="calendar-days" /> Indeks berita</Link>
-							{darkToggle ? <button type="button" data-gx-dark><Icon name="moon" className="gx-show-light" /><Icon name="sun" className="gx-show-dark" /> <span className="gx-show-light">Mode gelap</span><span className="gx-show-dark">Mode terang</span></button> : null}
-						</div>
-					</div>
 				</div>
 				{/* Pembungkus menjaga tinggi saat bilah menu menempel (fixed) di desktop. */}
 				<div className="gx-navwrap" data-gx-navwrap>
@@ -107,7 +98,21 @@ export function Header({ config }) {
 				</div>
 				<Breaking config={config} />
 			</header>
-			<div className="gx-overlay" data-gx-menu-close hidden />
+			<div className="gx-overlay" data-gx-menu-close />
+			{/* Menu burger (HP/tablet): laci dari kiri, daftar kanal vertikal. */}
+			<aside id="gx-mobile-menu" className="gx-drop" aria-label="Menu" aria-hidden="true" inert>
+				<div className="gx-drop__head">
+					<Logo config={config} />
+					<button type="button" className="gx-iconbtn" data-gx-menu-close aria-label="Tutup menu"><Icon name="xmark" /></button>
+				</div>
+				<SearchForm id="gx-mobile-search" className="gx-search--drop" />
+				<p className="gx-drop__label">Kanal</p>
+				<nav aria-label="Menu mobile"><MenuList items={list(config.menus?.main)} className="gx-drop__list" icons /></nav>
+				<div className="gx-drop__foot">
+					<Link href="/indeks/"><Icon name="calendar-days" /> Indeks berita</Link>
+					{darkToggle ? <button type="button" data-gx-dark><Icon name="moon" className="gx-show-light" /><Icon name="sun" className="gx-show-dark" /> <span className="gx-show-light">Mode gelap</span><span className="gx-show-dark">Mode terang</span></button> : null}
+				</div>
+			</aside>
 			{o.ad_header ? <div className="container-custom gx-ad-wrap"><Ad config={config} slot="header" /></div> : null}
 		</>
 	);

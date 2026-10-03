@@ -1,6 +1,6 @@
 'use client';
 // Interaksi global memakai delegasi event (tetap berfungsi setelah navigasi Next.js):
-// mode gelap, menu kanal mobile, menu desktop menempel & bisa digeser, salin tautan, lightbox, kembali ke atas, carousel topik.
+// mode gelap, menu burger (laci kiri), menu desktop menempel & bisa digeser, salin tautan, lightbox, kembali ke atas, carousel topik.
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
@@ -17,12 +17,17 @@ function setMenu(open, focusSearch) {
 	const menu = document.getElementById('gx-mobile-menu');
 	const overlay = document.querySelector('.gx-overlay');
 	if (!menu) return;
-	menu.hidden = !open;
-	if (overlay) overlay.hidden = !open;
+	// Pakai kelas (bukan `hidden`) agar laci bisa beranimasi geser dari kiri.
+	menu.classList.toggle('is-open', open);
+	menu.inert = !open;
+	menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+	overlay?.classList.toggle('is-open', open);
 	document.body.classList.toggle('gx-menu-open', open);
 	document.querySelectorAll('[data-gx-menu-toggle]').forEach((b) => b.setAttribute('aria-expanded', open ? 'true' : 'false'));
-	if (open && focusSearch) setTimeout(() => menu.querySelector('input[type=search]')?.focus(), 50);
+	if (open && focusSearch) setTimeout(() => menu.querySelector('input[type=search]')?.focus(), 320);
 }
+
+const menuOpen = () => Boolean(document.getElementById('gx-mobile-menu')?.classList.contains('is-open'));
 
 // Desktop: bilah menu menempel di atas saat topbar tergulir keluar layar.
 const DESKTOP = '(min-width: 1024px)';
@@ -62,7 +67,7 @@ export default function UiController() {
 		setMenu(false);
 		closeLightbox();
 		// Tandai menu aktif & geser agar terlihat.
-		document.querySelectorAll('.gx-nav__list a, .gx-drop__grid a').forEach((a) => {
+		document.querySelectorAll('.gx-nav__list a, .gx-drop__list a').forEach((a) => {
 			const href = a.getAttribute('href') || '';
 			const active = href === '/' ? pathname === '/' : href.startsWith('/') && pathname.startsWith(href);
 			if (active) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
@@ -112,7 +117,7 @@ export default function UiController() {
 				return;
 			}
 			if (t.closest('[data-gx-menu-toggle]')) {
-				setMenu(document.getElementById('gx-mobile-menu')?.hidden);
+				setMenu(!menuOpen());
 				return;
 			}
 			if (t.closest('[data-gx-menu-close]')) { setMenu(false); return; }
