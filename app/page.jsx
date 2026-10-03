@@ -8,6 +8,9 @@ import { SHORTS } from '@/lib/shorts';
 // Ubah ke `true` untuk menyalakan lagi.
 const TRENDING_PANEL = false;
 
+// Profil sosial media resmi (pengaturan tema) untuk data terstruktur organisasi.
+const SOCIAL = ['facebook', 'x', 'instagram', 'youtube', 'tiktok', 'threads', 'linkedin'];
+
 export default async function HomePage() {
 	const [config, home, shorts] = await Promise.all([getConfig(), wp('home'), getShorts()]);
 	if (!config.licensed) return null;
@@ -15,7 +18,7 @@ export default async function HomePage() {
 	const jsonLd = {
 		'@context': 'https://schema.org',
 		'@graph': [
-			{ '@type': o.seo_org_type || 'NewsMediaOrganization', '@id': `${SITE_URL}/#organization`, name: config.site.name, url: `${SITE_URL}/`, logo: config.site.logo || undefined },
+			{ '@type': o.seo_org_type || 'NewsMediaOrganization', '@id': `${SITE_URL}/#organization`, name: config.site.name, url: `${SITE_URL}/`, logo: config.site.logo ? { '@type': 'ImageObject', url: config.site.logo } : undefined, sameAs: SOCIAL.map((k) => o[`social_${k}`]).filter(Boolean) },
 			{ '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: `${SITE_URL}/`, name: config.site.name, publisher: { '@id': `${SITE_URL}/#organization` }, potentialAction: { '@type': 'SearchAction', target: `${SITE_URL}/cari/?q={search_term_string}`, 'query-input': 'required name=search_term_string' } },
 		],
 	};

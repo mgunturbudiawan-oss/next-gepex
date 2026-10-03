@@ -1,6 +1,6 @@
 import './theme.css';
 import './globals.css';
-import { getConfig, SITE_URL } from '@/lib/wp';
+import { getConfig, SITE_URL, robotsFor } from '@/lib/wp';
 import { Header, Footer } from '@/components/Layout';
 import UiController from '@/components/UiController';
 import NavProgress from '@/components/NavProgress';
@@ -24,7 +24,7 @@ export async function generateMetadata() {
 		twitter: { card: 'summary_large_image', site: o.seo_twitter_site || undefined },
 		icons: site.icon ? { icon: site.icon, apple: site.icon } : undefined,
 		verification: { google: o.seo_google_verify || undefined, other: o.seo_bing_verify ? { 'msvalidate.01': o.seo_bing_verify } : undefined },
-		robots: { index: true, follow: true, 'max-image-preview': 'large' },
+		robots: robotsFor(),
 	};
 }
 

@@ -1,4 +1,4 @@
-import { wpOrNull, getConfig } from '@/lib/wp';
+import { wpOrNull, getConfig, robotsFor } from '@/lib/wp';
 import Archive from '@/components/Archive';
 import { PageLayout } from '@/components/Layout';
 import { ClientArchive } from '@/components/ClientFallback';
@@ -8,7 +8,7 @@ const nameOf = (slug) => decodeURIComponent(slug).replace(/-/g, ' ');
 export async function generateMetadata(props) {
 	const params = await props.params;
 	const [config, d] = await Promise.all([getConfig(), wpOrNull('list', { type: 'tag', slug: params.slug })]);
-	return { robots: { index: !config.options?.seo_noindex_tag, follow: true }, title: d ? d.title : nameOf(params.slug), description: d?.description || undefined, alternates: { canonical: `/tag/${params.slug}/` } };
+	return { robots: robotsFor(!config.options?.seo_noindex_tag), title: d ? d.title : nameOf(params.slug), description: d?.description || undefined, alternates: { canonical: `/tag/${params.slug}/` } };
 }
 
 export default async function TagPage(props) {

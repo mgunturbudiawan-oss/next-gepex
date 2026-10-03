@@ -1,4 +1,4 @@
-import { wpOrNull, getConfig } from '@/lib/wp';
+import { wpOrNull, getConfig, robotsFor } from '@/lib/wp';
 import Archive from '@/components/Archive';
 import { PageLayout } from '@/components/Layout';
 import { ClientArchive } from '@/components/ClientFallback';
@@ -8,7 +8,7 @@ const nameOf = (slug) => decodeURIComponent(slug).replace(/-/g, ' ');
 export async function generateMetadata(props) {
 	const params = await props.params;
 	const [config, d] = await Promise.all([getConfig(), wpOrNull('list', { type: 'author', slug: params.slug })]);
-	return { title: d ? d.title : nameOf(params.slug), description: d?.description || undefined, alternates: { canonical: `/penulis/${params.slug}/` }, robots: { index: !config.options?.seo_noindex_author, follow: true } };
+	return { title: d ? d.title : nameOf(params.slug), description: d?.description || undefined, alternates: { canonical: `/penulis/${params.slug}/` }, robots: robotsFor(!config.options?.seo_noindex_author) };
 }
 
 export default async function AuthorPage(props) {

@@ -16,6 +16,8 @@ const slugOf = (params) => {
 	const parts = Array.isArray(params.slug) ? params.slug : [params.slug];
 	return decodeURIComponent(parts[parts.length - 1] || '');
 };
+// Tanggal diubah tidak boleh lebih awal dari tanggal terbit (data seperti itu dianggap janggal oleh Google).
+const modifiedOf = (post) => (post.modified && post.date && new Date(post.modified) > new Date(post.date) ? post.modified : post.date);
 const pathOf = (params) => '/' + (Array.isArray(params.slug) ? params.slug : [params.slug]).map((p) => decodeURIComponent(p)).join('/') + '/';
 
 export async function generateMetadata(props) {
@@ -23,13 +25,15 @@ export async function generateMetadata(props) {
 	const [config, post] = await Promise.all([getConfig(), wpOrNull('post', { slug: slugOf(params) })]);
 	if (!post) return { title: slugOf(params).replace(/-/g, ' '), alternates: { canonical: pathOf(params) } };
 	const url = absolute(post.path);
-	const images = post.seo.image ? [{ url: post.seo.image, width: post.image?.width, height: post.image?.height, alt: post.title }] : undefined;
+	// Ukuran hanya disebut bila memang gambar yang sama (ukuran yang salah membingungkan Google/Facebook).
+	const sameImg = post.image && (post.image.full === post.seo.image || post.image.src === post.seo.image);
+	const images = post.seo.image ? [{ url: post.seo.image, width: sameImg ? post.image.width : undefined, height: sameImg ? post.image.height : undefined, alt: post.title }] : undefined;
 	return {
 		title: post.seo.title,
 		description: post.seo.description,
 		alternates: { canonical: post.path },
 		openGraph: post.type === 'post'
-			? { type: 'article', url, title: post.seo.title, description: post.seo.description, images, publishedTime: post.date, modifiedTime: post.modified, section: post.category?.name, tags: post.tags.map((t) => t.name), siteName: config.site?.name }
+			? { type: 'article', url, title: post.seo.title, description: post.seo.description, images, publishedTime: post.date, modifiedTime: modifiedOf(post), section: post.category ? decodeHtml(post.category.name) : undefined, tags: post.tags.map((t) => t.name), siteName: config.site?.name }
 			: { type: 'website', url, title: post.seo.title, description: post.seo.description, images, siteName: config.site?.name },
 		twitter: { card: 'summary_large_image', title: post.seo.title, description: post.seo.description, images: post.seo.image ? [post.seo.image] : undefined },
 	};
@@ -60,11 +64,13 @@ export default async function SinglePage(props) {
 				mainEntityOfPage: { '@type': 'WebPage', '@id': url },
 				headline: post.title,
 				description: post.seo.description,
-				image: post.image ? [post.image.full || post.image.src] : undefined,
+				image: post.image ? [{ '@type': 'ImageObject', url: post.image.full || post.image.src, ...(post.image.full ? {} : { width: post.image.width, height: post.image.height }), caption: post.image.caption || undefined }] : undefined,
 				datePublished: post.date,
-				dateModified: post.modified,
+				dateModified: modifiedOf(post),
 				author: post.author ? { '@type': 'Person', name: post.author.name, url: absolute(post.author.path) } : undefined,
-				publisher: { '@type': 'Organization', name: config.site.name, logo: config.site.logo ? { '@type': 'ImageObject', url: config.site.logo } : undefined },
+				publisher: { '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: config.site.name, url: `${SITE_URL}/`, logo: config.site.logo ? { '@type': 'ImageObject', url: config.site.logo } : undefined },
+				isAccessibleForFree: true,
+				inLanguage: config.site.language || 'id-ID',
 				articleSection: post.category ? decodeHtml(post.category.name) : undefined,
 				keywords: post.tags.map((t) => t.name).join(', ') || undefined,
 			},
