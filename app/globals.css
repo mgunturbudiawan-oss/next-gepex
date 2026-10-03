@@ -440,3 +440,22 @@ body:has(.gx-ctheme--nu) {
 :root.dark .gx-share__btn--x { background: #262626; }
 :root.dark .sk::after { background: linear-gradient(90deg, transparent, rgb(255 255 255 / .06), transparent); }
 :root.dark .gx-content pre { background: #141414; }
+
+/* ---------- Berita terkait (artikel): tanpa model kartu ---------- */
+.gx-plain { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem .9rem; }
+@media (min-width: 640px) { .gx-plain { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem 1.1rem; } }
+.gx-plain__item { min-width: 0; }
+.gx-plain__media { display: block; aspect-ratio: 16 / 10; margin-bottom: .5rem; overflow: hidden; border-radius: 4px; background: rgb(var(--gx-line)); }
+.gx-plain__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.gx-plain__item:hover .gx-plain__media img { transform: scale(1.04); }
+.gx-plain__item .gx-cat { margin-bottom: .15rem; font-size: .68rem; }
+.gx-plain__title { margin: 0; font-size: .92rem; font-weight: 700; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.gx-plain__title a { color: rgb(var(--gx-heading)); }
+.gx-plain__title a:hover { color: rgb(var(--gx-primary)); }
+.gx-plain__time { display: block; margin-top: .25rem; font-size: .72rem; color: rgb(var(--gx-muted)); }
+
+/* ---------- "Baca juga" di isi artikel: tanpa foto, judul saja ---------- */
+.gx-content .gx-baca-juga__thumb { display: none; }
+.gx-content .gx-baca-juga__item { display: block; position: relative; padding-left: 1rem; }
+.gx-content .gx-baca-juga__item::before { content: "›"; position: absolute; left: 0; top: -.05em; font-weight: 800; color: rgb(var(--gx-accent)); }
+.gx-content .gx-baca-juga__title { font-size: .98rem; line-height: 1.4; }

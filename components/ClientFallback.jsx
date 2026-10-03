@@ -9,6 +9,7 @@ import LoadMore from './LoadMore';
 import ViewPing from './ViewPing';
 import Icon from './Icon';
 import { wpBrowserGet } from '@/lib/wp-browser';
+import { stripBacaJugaThumbs } from '@/lib/list';
 
 function useWp(path) {
 	const [state, setState] = useState({ status: 'loading', data: null });
@@ -77,7 +78,7 @@ export function ClientPost({ slug, opts }) {
 				</figure>
 			) : null}
 			<div className="gx-article__body">
-				<div className="gx-content entry-content" dangerouslySetInnerHTML={{ __html: post.content }} />
+				<div className="gx-content entry-content" dangerouslySetInnerHTML={{ __html: stripBacaJugaThumbs(post.content) }} />
 				{isPost && opts.show_tags && post.tags?.length ? (
 					<div className="gx-tags">
 						<span className="gx-tags__label"><Icon name="hashtag" /> Tag</span>

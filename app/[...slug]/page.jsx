@@ -3,12 +3,12 @@ import { permanentRedirect } from 'next/navigation';
 import { wpOrNull, getConfig, absolute, SITE_URL } from '@/lib/wp';
 import { ClientPost } from '@/components/ClientFallback';
 import { PageLayout, Sidebar, Breadcrumbs, Share } from '@/components/Layout';
-import { Cat, Meta, CardGrid, SectionTitle } from '@/components/Cards';
+import { Cat, Meta, SectionTitle, PlainGrid } from '@/components/Cards';
 import Icon from '@/components/Icon';
 import Ad from '@/components/Ad';
 import ViewPing from '@/components/ViewPing';
 import Comments from '@/components/Comments';
-import { decodeHtml } from '@/lib/list';
+import { decodeHtml, stripBacaJugaThumbs } from '@/lib/list';
 
 // Mendukung semua struktur permalink WordPress: /judul/, /2026/09/30/judul/, /kategori/judul/, /induk/anak/ …
 // Slug artikel = segmen terakhir URL.
@@ -108,7 +108,7 @@ export default async function SinglePage(props) {
 					{isPost && o.share_floating ? <div className="gx-article__float"><Share config={config} url={url} title={post.title} className="gx-share gx-share--vertical" /></div> : null}
 					<div className="gx-article__body">
 						{isPost ? <Ad config={config} slot="before_content" /> : null}
-						<div className="gx-content entry-content" dangerouslySetInnerHTML={{ __html: post.content }} />
+						<div className="gx-content entry-content" dangerouslySetInnerHTML={{ __html: stripBacaJugaThumbs(post.content) }} />
 						{isPost ? <Ad config={config} slot="after_content" /> : null}
 						{isPost && o.show_tags && post.tags.length ? (
 							<div className="gx-tags">
@@ -136,7 +136,7 @@ export default async function SinglePage(props) {
 			{isPost && post.related && post.related.length ? (
 				<section className="gx-related">
 					<SectionTitle title={o.related_title} />
-					<div className="gx-grid">{post.related.map((p) => <CardGrid key={p.id} post={p} opts={o} />)}</div>
+					<PlainGrid posts={post.related} opts={o} />
 				</section>
 			) : null}
 

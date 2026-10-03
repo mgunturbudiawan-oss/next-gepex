@@ -110,3 +110,19 @@ export function SectionTitle({ title, href, as = 'h2', icon, id }) {
 		</div>
 	);
 }
+
+/** Daftar berita tanpa model kartu: foto di atas, kategori & judul di bawah (mis. Berita Terkait). */
+export function PlainGrid({ posts, opts }) {
+	return (
+		<div className="gx-plain">
+			{posts.map((p) => (
+				<article key={p.id} className="gx-plain__item">
+					<Link className="gx-plain__media" href={p.path} tabIndex={-1} aria-hidden="true"><Thumb post={p} sizes="(max-width: 640px) 50vw, 240px" /></Link>
+					<Cat post={p} opts={opts} />
+					<h3 className="gx-plain__title"><Link href={p.path}>{p.title}</Link></h3>
+					<span className="gx-plain__time">{p.ago || p.dateText}</span>
+				</article>
+			))}
+		</div>
+	);
+}
