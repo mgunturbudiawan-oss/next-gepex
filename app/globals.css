@@ -308,7 +308,6 @@
 @media (max-width: 639px) { .gx-reco__item:nth-child(n+5) { display: none; } }
 
 /* ---------- Sidebar: Berita Sekitar Anda (lokasi → provinsi terdekat) ---------- */
-.gx-nearby .gx-widget__title .gx-icon { color: rgb(var(--gx-accent)); }
 .gx-nearby__pick { display: block; width: 100%; }
 .gx-nearby__pick select { padding: .5rem .7rem; font-size: .85rem; }
 

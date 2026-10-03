@@ -124,7 +124,7 @@ export default function NearbyNews() {
 
 	return (
 		<section className="gx-widget gx-nearby" aria-labelledby="gx-nearby-title">
-			<h2 className="gx-widget__title" id="gx-nearby-title"><Icon name="map-pin" /> Berita Sekitar Anda</h2>
+			<h2 className="gx-widget__title" id="gx-nearby-title"><span className="gx-section-bar gx-reco__bar" aria-hidden="true" />Berita Sekitar Anda</h2>
 			{status === 'ready' && lead ? (
 				<>
 					<div className="gx-nearby__bar">
