@@ -4,6 +4,7 @@ import { getConfig, SITE_URL, robotsFor } from '@/lib/wp';
 import { Header, Footer } from '@/components/Layout';
 import UiController from '@/components/UiController';
 import NavProgress from '@/components/NavProgress';
+import NavSkeleton from '@/components/NavSkeleton';
 import { Suspense } from 'react';
 import RawHtml from '@/components/RawHtml';
 
@@ -60,7 +61,7 @@ export default async function RootLayout({ children }) {
 				<style dangerouslySetInnerHTML={{ __html: config.css }} />
 			</head>
 			<body className={bodyClass}>
-				<Suspense fallback={null}><NavProgress /></Suspense>
+				<Suspense fallback={null}><NavProgress /><NavSkeleton /></Suspense>
 				<Header config={config} />
 				<div id="gx-content" className="gx-site-content">{children}</div>
 				<Footer config={config} />
