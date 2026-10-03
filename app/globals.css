@@ -380,3 +380,16 @@
 .gx-rubrik__list li { padding: .65rem 0; border-bottom: 1px solid rgb(var(--gx-line)); }
 .gx-rubrik__list li:last-child { border-bottom: 0; }
 .gx-rubrik__list a { font-size: .9rem; font-weight: 600; line-height: 1.38; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ---------- Short Video: petunjuk "geser ke atas" (beberapa detik setelah pemutar dibuka) ---------- */
+/* Lapisan gelap tipis di seluruh layar agar petunjuk terbaca di atas video apa pun. */
+.gx-svp__hint { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .2rem; text-align: center; color: #fff; pointer-events: none; background: radial-gradient(circle at 50% 50%, rgb(0 0 0 / .6), rgb(0 0 0 / .35) 60%); animation: gx-hint-life 3.2s ease forwards; }
+.gx-svp__hint strong { margin-top: .8rem; font-size: 1.3rem; font-weight: 700; text-shadow: 0 1px 4px rgb(0 0 0 / .6); }
+.gx-svp__hint span:last-child { font-size: .9rem; opacity: .85; text-shadow: 0 1px 4px rgb(0 0 0 / .6); }
+.gx-svp__hand { position: relative; width: 4.5rem; height: 4.5rem; fill: rgb(255 255 255 / .15); filter: drop-shadow(0 2px 6px rgb(0 0 0 / .5)); animation: gx-hint-swipe 1.3s cubic-bezier(.4, 0, .2, 1) infinite; }
+/* Jejak gerakan di atas tangan. */
+.gx-svp__hint-trail { width: 4px; height: 3.5rem; margin-bottom: -1.6rem; margin-left: -.55rem; border-radius: 3px; background: linear-gradient(to top, rgb(255 255 255 / .8), transparent); animation: gx-hint-trail 1.3s cubic-bezier(.4, 0, .2, 1) infinite; }
+@keyframes gx-hint-swipe { 0% { transform: translateY(26px); opacity: 0; } 20% { opacity: 1; } 70% { transform: translateY(-22px); opacity: 1; } 100% { transform: translateY(-28px); opacity: 0; } }
+@keyframes gx-hint-trail { 0%, 25% { transform: scaleY(0); transform-origin: bottom; opacity: 0; } 60% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1) translateY(-14px); opacity: 0; } }
+@keyframes gx-hint-life { 0% { opacity: 0; } 10%, 85% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .gx-svp__hand, .gx-svp__hint-trail { animation: none; } }

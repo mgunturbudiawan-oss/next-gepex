@@ -22,6 +22,21 @@ const fmt = new Intl.NumberFormat('id-ID', { notation: 'compact', maximumFractio
 const count = (n) => fmt.format(n || 0);
 
 // Suka disimpan di browser pengunjung.
+// Petunjuk "geser ke atas" tidak ditampilkan lagi setelah pengunjung pernah menggeser.
+const SWIPED_KEY = 'gx-sv-swiped';
+const HINT_MS = 3200;
+
+function HandIcon() {
+	return (
+		<svg className="gx-svp__hand" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+			<path d="M9 15.5V4.5a1.5 1.5 0 0 1 3 0V10" />
+			<path d="M12 9.5a1.5 1.5 0 0 1 3 0V11" />
+			<path d="M15 10.5a1.5 1.5 0 0 1 3 0V11.5" />
+			<path d="M18 11.5a1.5 1.5 0 0 1 3 0V15c0 3.9-3 7-7 7h-1.2c-2 0-3.6-.9-4.7-2.5L4.4 15.4a1.6 1.6 0 0 1 2.5-2L9 15.5" />
+		</svg>
+	);
+}
+
 const LIKES_KEY = 'gx-sv-likes';
 function readLikes() {
 	try { return new Set(JSON.parse(localStorage.getItem(LIKES_KEY) || '[]')); } catch (e) { return new Set(); }
@@ -63,6 +78,16 @@ function Player({ videos, start, onClose }) {
 	const [likes, setLikes] = useState(() => readLikes());
 	const [sheet, setSheet] = useState(false);
 	const [toast, setToast] = useState('');
+	const [hint, setHint] = useState(() => {
+		if (videos.length < 2) return false;
+		try { return !localStorage.getItem(SWIPED_KEY); } catch (e) { return true; }
+	});
+	// Petunjuk tampil beberapa detik lalu memudar.
+	useEffect(() => {
+		if (!hint) return undefined;
+		const t = setTimeout(() => setHint(false), HINT_MS);
+		return () => clearTimeout(t);
+	}, [hint]);
 	const toastTimer = useRef(0);
 
 	const flash = (msg) => {
@@ -119,7 +144,10 @@ function Player({ videos, start, onClose }) {
 			const f = feed.current;
 			if (!f) return;
 			const n = Math.round(f.scrollTop / f.clientHeight);
-			if (n !== idx) { setIdx(n); setPaused(false); setSheet(false); }
+			if (n !== idx) {
+				setIdx(n); setPaused(false); setSheet(false); setHint(false);
+				try { localStorage.setItem(SWIPED_KEY, '1'); } catch (e) { /* abaikan */ }
+			}
 		}, 120);
 	};
 
@@ -168,6 +196,14 @@ function Player({ videos, start, onClose }) {
 			</div>
 			<span className="gx-svp__count" aria-live="polite">{idx + 1} / {videos.length}</span>
 			{toast ? <div className="gx-svp__toast" role="status">{toast}</div> : null}
+			{hint ? (
+				<div className="gx-svp__hint" role="status">
+					<span className="gx-svp__hint-trail" aria-hidden="true" />
+					<HandIcon />
+					<strong>Geser ke atas</strong>
+					<span>untuk video berikutnya</span>
+				</div>
+			) : null}
 			{sheet ? (
 				<>
 					<div className="gx-svp__scrim" onClick={() => setSheet(false)} />
