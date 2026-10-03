@@ -304,3 +304,5 @@
 .gx-reco__name { margin: 0; font-size: .92rem; font-weight: 700; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .gx-reco__name a { color: rgb(var(--gx-heading)); }
 .gx-reco__name a:hover { color: rgb(var(--gx-primary)); }
+/* HP: rekomendasi cukup 4 (2×2). */
+@media (max-width: 639px) { .gx-reco__item:nth-child(n+5) { display: none; } }
