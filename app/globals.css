@@ -232,3 +232,10 @@
 	.gx-drop, .gx-drop.is-open, .gx-overlay, .gx-overlay.is-open { transition: none; }
 	.gx-drop.is-open .gx-drop__list li { animation: none; }
 }
+
+/* ---------- Footer HP: menu (mis. Tentang Kami & Bantuan) berdampingan 2 kolom ---------- */
+@media (max-width: 767px) {
+	.gx-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem 1.25rem; }
+	.gx-footer__brand { grid-column: 1 / -1; }
+	.gx-footer__menu a { overflow-wrap: anywhere; }
+}
