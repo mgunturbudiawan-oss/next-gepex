@@ -362,7 +362,7 @@
 	.gx-page--after > .gx-layout > .gx-aside { order: 3; margin-top: 1.5rem; }
 }
 
-/* ---------- Rubrik kategori: 3 kolom, 1 berita bergambar + 3 daftar tanpa foto ---------- */
+/* ---------- Rubrik kategori: 3 kolom, 1 berita bergambar + 2 daftar tanpa foto ---------- */
 .gx-rubrik { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem 1.5rem; margin-top: 2rem; }
 @media (min-width: 640px) { .gx-rubrik { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1024px) { .gx-rubrik { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

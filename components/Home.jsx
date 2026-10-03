@@ -213,7 +213,7 @@ export function Latest({ home, config }) {
 	);
 }
 
-/** Rubrik kategori: 3 kolom; tiap kolom 1 berita bergambar besar + 3 daftar berita tanpa foto. */
+/** Rubrik kategori: 3 kolom; tiap kolom 1 berita bergambar besar + 2 daftar berita tanpa foto. */
 export function Sections({ sections, opts }) {
 	const items = list(sections).filter((s) => list(s.posts).length);
 	if (!items.length) return null;
@@ -231,7 +231,7 @@ export function Sections({ sections, opts }) {
 						</article>
 						{rest.length ? (
 							<ul className="gx-rubrik__list">
-								{rest.slice(0, 3).map((p) => (
+								{rest.slice(0, 2).map((p) => (
 									<li key={p.id}>
 										<Link href={p.path}>{p.title}</Link>
 										<span className="gx-rubrik__time">{p.ago || p.dateText}</span>
