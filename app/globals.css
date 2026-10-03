@@ -285,4 +285,7 @@
 	.gx-page--home .gx-card--list { grid-template-columns: 216px minmax(0, 1fr); }
 	.gx-page--home .gx-card--list .gx-card__media { width: 216px; height: 161px; aspect-ratio: auto; }
 	.gx-page--home .gx-card--list .gx-card__media img { width: 100%; height: 100%; object-fit: cover; }
+	/* Judul lebih besar & teks diposisikan ke tengah tinggi gambar. */
+	.gx-page--home .gx-card--list { align-items: center; }
+	.gx-page--home .gx-card--list .gx-card__title { font-size: 1.25rem; line-height: 1.32; }
 }
