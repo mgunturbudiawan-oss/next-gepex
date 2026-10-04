@@ -38,6 +38,11 @@ const nextConfig = {
 				{ source: '/feed/:path*', destination: `${WP}/feed/:path*`, permanent: false },
 			);
 		}
+		// Terakhir (setelah aturan WordPress di atas): alamat tanpa "www" → alamat resmi dengan "www" (mis. deliknews.com → www.deliknews.com), sama seperti WordPress dulu.
+		const siteHost = hostOf(SITE);
+		if (siteHost.startsWith('www.')) {
+			rules.push({ source: '/:path*', has: [{ type: 'host', value: siteHost.slice(4) }], destination: `${SITE}/:path*`, permanent: true });
+		}
 		return rules;
 	},
 };
