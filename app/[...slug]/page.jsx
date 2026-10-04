@@ -3,7 +3,7 @@ import { permanentRedirect } from 'next/navigation';
 import { wpOrNull, getConfig, absolute, SITE_URL } from '@/lib/wp';
 import { ClientPost } from '@/components/ClientFallback';
 import { PageLayout, Sidebar, Breadcrumbs, Share } from '@/components/Layout';
-import { Cat, Meta, SectionTitle, PlainGrid } from '@/components/Cards';
+import { Cat, Meta, SectionTitle, PlainGrid, AuthorByline } from '@/components/Cards';
 import Icon from '@/components/Icon';
 import Ad from '@/components/Ad';
 import ViewPing from '@/components/ViewPing';
@@ -89,7 +89,8 @@ export default async function SinglePage(props) {
 					{isPost ? (
 						<>
 							<div className="gx-article__info">
-								<Meta post={post} opts={o} views avatar={post.authorAvatar} />
+								<AuthorByline post={post} avatar={post.authorAvatar} />
+								<Meta post={post} opts={{ ...o, show_author: false }} views />
 								{o.show_reading_time ? <div className="gx-meta gx-meta--sub"><span><Icon name="clock" /> {post.readingTime} menit baca</span></div> : null}
 							</div>
 							<Share config={config} url={url} title={post.title} />

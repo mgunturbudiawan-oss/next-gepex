@@ -3,7 +3,7 @@
 // browser pengunjung meminta langsung ke WordPress lalu menampilkannya.
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { CardList, Cat, Meta } from './Cards';
+import { CardList, Cat, Meta, AuthorByline } from './Cards';
 import { SkCardList, SkArticle } from './Skeleton';
 import LoadMore from './LoadMore';
 import ViewPing from './ViewPing';
@@ -69,7 +69,7 @@ export function ClientPost({ slug, opts }) {
 				{isPost ? <Cat post={post} opts={opts} solid /> : null}
 				<h1 className="gx-article__title">{post.title}</h1>
 				{isPost && post.excerptRaw ? <p className="gx-article__lead">{post.excerptRaw}</p> : null}
-				{isPost ? <div className="gx-article__info"><Meta post={post} opts={opts} views avatar={post.authorAvatar} /></div> : null}
+				{isPost ? <div className="gx-article__info"><AuthorByline post={post} avatar={post.authorAvatar} /><Meta post={post} opts={{ ...opts, show_author: false }} views /></div> : null}
 			</header>
 			{img && (opts.show_featured || !isPost) ? (
 				<figure className="gx-article__figure">
